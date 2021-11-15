@@ -94,7 +94,9 @@ class _HomePageState extends State<HomePage> {
         openPlayer: openPlayer,
       ),
       SearchPage(),
-      Library()
+      Library(
+        audios: audio,
+      )
     ];
     // getSongs();
     // print(audio);

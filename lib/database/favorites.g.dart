@@ -1,32 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'playlistmodel.dart';
+part of 'favorites.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PlaylistModelmyAdapter extends TypeAdapter<PlaylistModelmy> {
+class FavoritesmodelAdapter extends TypeAdapter<Favoritesmodel> {
   @override
-  final int typeId = 1;
+  final int typeId = 3;
 
   @override
-  PlaylistModelmy read(BinaryReader reader) {
+  Favoritesmodel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PlaylistModelmy(
-      title: fields[0] as dynamic,
+    return Favoritesmodel(
+      index: fields[0] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, PlaylistModelmy obj) {
+  void write(BinaryWriter writer, Favoritesmodel obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
-      ..write(obj.title);
+      ..write(obj.index);
   }
 
   @override
@@ -35,7 +35,7 @@ class PlaylistModelmyAdapter extends TypeAdapter<PlaylistModelmy> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PlaylistModelmyAdapter &&
+      other is FavoritesmodelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

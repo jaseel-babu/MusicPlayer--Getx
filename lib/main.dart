@@ -2,6 +2,9 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:musicsample/database/datamodel.dart';
+import 'package:musicsample/database/favorites.dart';
+import 'package:musicsample/database/playlist.dart';
+import 'package:musicsample/database/playlistmodel.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'homepage.dart';
@@ -9,7 +12,12 @@ import 'homepage.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DataModelAdapter());
-  Hive.registerAdapter(DataModelAdapter());
+  Hive.registerAdapter(PlaylistModelmyAdapter());
+  // Hive.registerAdapter(playlistindexAdapter());
+  Hive.registerAdapter(FavoritesmodelAdapter());
+  // await Hive.openBox('playlistindex');
+  await Hive.openBox('playlist');
+  await Hive.openBox('fovorites');
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

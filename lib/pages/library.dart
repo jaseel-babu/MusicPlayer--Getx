@@ -1,20 +1,38 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/database/playlistmodel.dart';
+import 'package:musicsample/pages/favoritePage.dart';
+import 'package:musicsample/pages/playlistpage.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class Library extends StatefulWidget {
-  Library({Key? key}) : super(key: key);
+  List<Audio> audios;
+  Library({Key? key, required this.audios}) : super(key: key);
 
   @override
   _LibraryState createState() => _LibraryState();
 }
 
 class _LibraryState extends State<Library> {
+  List<dynamic> dummylist = [];
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  var playlistbox = Hive.box('playlist');
+
+  final TextEditingController namecontroller = TextEditingController();
+  String? title;
+  // list() async => playlist = await Hive.openBox('playlist');
   @override
   Widget build(BuildContext context) {
+    var a = playlistbox.get("title");
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(
-        // scrollDirection: Axis.vertical,
-        // shrinkWrap: true,
         children: [
           ListTile(
             title: GestureDetector(
@@ -34,6 +52,7 @@ class _LibraryState extends State<Library> {
                   ),
                   actions: [
                     TextField(
+                      controller: namecontroller,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -42,7 +61,23 @@ class _LibraryState extends State<Library> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'OK'),
+                      onPressed: () async {
+                        // print(namecontroller);
+                        if (namecontroller != null) {
+                          title = namecontroller.text;
+                          // PlaylistModelmy playlist =
+                          // PlaylistModelmy(title: title);
+                          title != null
+                              ? playlistbox.put(
+                                  title,
+                                  dummylist,
+                                )
+                              : playlistbox;
+                          setState(() {});
+                          Navigator.pop(context, 'OK');
+                          namecontroller.clear();
+                        }
+                      },
                       child: const Text(
                         'OK',
                         style: TextStyle(
@@ -57,17 +92,100 @@ class _LibraryState extends State<Library> {
           ),
           GestureDetector(
             onTap: () {
-              print('pressed');
+              playlistbox.clear();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Favorites(
+                    audios: widget.audios,
+                    title: 'Favorites',
+                  ),
+                ),
+              );
             },
             child: ListTile(
               tileColor: Colors.white30,
-              title: Text(
-                'Favorites',
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+              title: a == null
+                  ? Text(
+                      'Favorites',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  : Text(
+                      a.title,
+                      style: TextStyle(color: Colors.white),
+                    ),
+              trailing: Icon(Icons.favorite, color: Colors.white),
             ),
           ),
+          playlistbox == null
+              ? Text(
+                  'No Data here now',
+                  style: TextStyle(color: Colors.white),
+                )
+              : ValueListenableBuilder(
+                  valueListenable: Hive.box('playlist').listenable(),
+                  builder: (context, Box todos, _) {
+                    //var keys = todos.keys.cast<int>().toList();
+                    return (ListView.separated(
+                      physics: ScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: todos.keys.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, ind) {
+                        //final int key = keys[index];
+                        var todo = todos.get(title.toString());
+                        // a = b.get('title');
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PlaylistPage(
+                            //       title: todos.keyAt(ind),
+                            //       curindex: widget.audios[ind],
+                            //     ),
+                            //   ),
+                            // );
+                          },
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => playlistpage(
+                                            audios: widget.audios,
+                                            title: todos.keyAt(ind),
+                                          )));
+                            },
+                            child: ListTile(
+                              title: todos.isEmpty
+                                  ? Text(
+                                      "No",
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  : Text(
+                                      todos.keyAt(ind),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  todos.deleteAt(ind);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (_, index) => Divider(
+                        color: Colors.white,
+                      ),
+                    ));
+                  },
+                )
         ],
       ),
     );

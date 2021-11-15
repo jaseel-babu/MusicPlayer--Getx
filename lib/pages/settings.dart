@@ -44,6 +44,18 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           ListTile(
+            leading: Text(
+              'Privacy and Policy',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+          ListTile(
+            leading: Text(
+              'Terms And Conditions',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+          ListTile(
             onTap: () => showAboutDialog(
                 context: context,
                 applicationName: 'Music app',

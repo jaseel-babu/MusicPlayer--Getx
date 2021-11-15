@@ -1,5 +1,10 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:musicsample/database/favorites.dart';
+import 'package:musicsample/database/playlistmodel.dart';
+import 'package:musicsample/pages/addsongtoplaylist.dart';
+import 'package:musicsample/pages/favoritePage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import 'playpage.dart';
@@ -110,16 +115,79 @@ class _SonglistState extends State<Songlist> {
                                           itemBuilder: (context) {
                                             return <PopupMenuItem<String>>[
                                               new PopupMenuItem<String>(
-                                                child:
-                                                    new Text('Add to Playlist'),
+                                                child: GestureDetector(
+                                                    onTap: () {
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //     builder: (context) =>
+                                                      //         AddLibrary(
+                                                      //       currentindex: widget
+                                                      //           .audios[index],
+                                                      //       audio:
+                                                      //           widget.audios,
+                                                      //     ),
+                                                      //   ),
+                                                      // );
+                                                    },
+                                                    child: new Text(
+                                                        'Add to Playlist')),
                                                 value: 'Add playlist',
                                                 onTap: () {},
                                               ),
                                               new PopupMenuItem<String>(
-                                                child: new Text(
-                                                    'Add to Favorites'),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    var playlistind =
+                                                        Hive.box('fovorites');
+                                                    // Favoritesmodel? a =
+                                                    //     playlistind.get(index);
+                                                    // var a = playlistind.values
+                                                    //     .toList();
+                                                    // .toList();
+                                                    // print(a!.index);
+                                                    // var b = a.contains(index);
+                                                    // b == true
+                                                    //     ?;
+
+                                                    playlistind.add(
+                                                      Favoritesmodel(
+                                                          index: index),
+                                                    );
+
+                                                    // : playlistind;
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Favorites(
+                                                          curindex: index,
+                                                          audios: widget.audios,
+                                                        ),
+                                                      ),
+                                                    );
+
+                                                    // Tooltip(
+                                                    //   message: 'Item Added',
+                                                    //   textStyle: TextStyle(
+                                                    //       color: Colors.white),
+                                                    //   decoration: BoxDecoration(
+                                                    //       color: Colors.red),
+                                                    // );
+                                                  },
+                                                  child: new Text(
+                                                      'Add to Favorites'),
+                                                ),
                                                 value: 'Favorites',
-                                                onTap: () {},
+                                                onTap: () {
+                                                  // Navigator.push(
+                                                  //   context,
+                                                  //   MaterialPageRoute(
+                                                  //     builder: (context) =>
+                                                  //         AddLibrary(),
+                                                  //   ),
+                                                  // );
+                                                },
                                               ),
                                             ];
                                           },

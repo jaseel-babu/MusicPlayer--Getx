@@ -3,9 +3,9 @@ import 'package:hive/hive.dart';
 part 'playlistmodel.g.dart';
 
 @HiveType(typeId: 1)
-class DataModel extends HiveObject {
+class PlaylistModelmy extends HiveObject {
   @HiveField(0)
-  late String title;
-  @HiveField(1)
-  late List<Audio> playlist;
+  late dynamic title;
+
+  PlaylistModelmy({required this.title});
 }

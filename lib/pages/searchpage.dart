@@ -22,6 +22,48 @@ class _SearchPageState extends State<SearchPage> {
                 hintText: 'Search'),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: ListTile(
+            trailing: Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+            ),
+            tileColor: Colors.grey[800],
+            title: Text(
+              'Darshana',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: ListTile(
+            trailing: Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+            ),
+            tileColor: Colors.grey[800],
+            title: Text(
+              'Darshana',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: ListTile(
+            trailing: Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+            ),
+            tileColor: Colors.grey[800],
+            title: Text(
+              'Darshana',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
       ],
     );
   }
