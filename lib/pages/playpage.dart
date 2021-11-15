@@ -9,9 +9,8 @@ import '../controll.dart';
 class PlayPage extends StatefulWidget {
   int index;
   List<Audio> audio;
-  Function openPlayer;
-  PlayPage(
-      {required this.openPlayer, required this.audio, required this.index});
+
+  PlayPage({required this.audio, required this.index});
 
   @override
   _PlayPageState createState() => _PlayPageState();
@@ -57,13 +56,13 @@ class _PlayPageState extends State<PlayPage> {
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.library_add,
-                color: Colors.white,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: Icon(
+            //     Icons.library_add,
+            //     color: Colors.white,
+            //   ),
+            // ),
             GestureDetector(
               onTap: () {
                 setState(() {});

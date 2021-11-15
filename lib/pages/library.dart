@@ -16,7 +16,6 @@ class Library extends StatefulWidget {
 }
 
 class _LibraryState extends State<Library> {
-  List<dynamic> dummylist = [];
   @override
   void initState() {
     super.initState();
@@ -29,7 +28,7 @@ class _LibraryState extends State<Library> {
   // list() async => playlist = await Hive.openBox('playlist');
   @override
   Widget build(BuildContext context) {
-    var a = playlistbox.get("title");
+    // var a = playlistbox.get("title");
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(
@@ -41,53 +40,55 @@ class _LibraryState extends State<Library> {
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () => showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  backgroundColor: Colors.black,
-                  title: Text(
-                    'Create New Playlist',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  actions: [
-                    TextField(
-                      controller: namecontroller,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(),
-                        hintText: 'Playlist Name',
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        // print(namecontroller);
-                        if (namecontroller != null) {
-                          title = namecontroller.text;
-                          // PlaylistModelmy playlist =
-                          // PlaylistModelmy(title: title);
-                          title != null
-                              ? playlistbox.put(
-                                  title,
-                                  dummylist,
-                                )
-                              : playlistbox;
-                          setState(() {});
-                          Navigator.pop(context, 'OK');
-                          namecontroller.clear();
-                        }
-                      },
-                      child: const Text(
-                        'OK',
+                  context: context,
+                  builder: (BuildContext context) {
+                    List<dynamic> dummylist = [];
+                    return AlertDialog(
+                      backgroundColor: Colors.black,
+                      title: Text(
+                        'Create New Playlist',
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      actions: [
+                        TextField(
+                          controller: namecontroller,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            hintText: 'Playlist Name',
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            // print(namecontroller);
+                            if (namecontroller != null) {
+                              title = namecontroller.text;
+                              // PlaylistModelmy playlist =
+                              // PlaylistModelmy(title: title);
+                              title!.isNotEmpty
+                                  ? playlistbox.put(
+                                      title,
+                                      dummylist,
+                                    )
+                                  : playlistbox;
+                              setState(() {});
+                              Navigator.pop(context, 'OK');
+                              namecontroller.clear();
+                            }
+                          },
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
             ),
           ),
           GestureDetector(
@@ -102,18 +103,14 @@ class _LibraryState extends State<Library> {
                   ),
                 ),
               );
+              List<dynamic> dummylist = [];
             },
             child: ListTile(
               tileColor: Colors.white30,
-              title: a == null
-                  ? Text(
-                      'Favorites',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  : Text(
-                      a.title,
-                      style: TextStyle(color: Colors.white),
-                    ),
+              title: Text(
+                'Favorites',
+                style: TextStyle(color: Colors.white),
+              ),
               trailing: Icon(Icons.favorite, color: Colors.white),
             ),
           ),
@@ -137,45 +134,36 @@ class _LibraryState extends State<Library> {
                         // a = b.get('title');
                         return GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PlaylistPage(
-                            //       title: todos.keyAt(ind),
-                            //       curindex: widget.audios[ind],
-                            //     ),
-                            //   ),
-                            // );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => playlistpage(
+                                          audios: widget.audios,
+                                          title: todos.keyAt(ind),
+                                        )));
                           },
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => playlistpage(
-                                            audios: widget.audios,
-                                            title: todos.keyAt(ind),
-                                          )));
-                            },
-                            child: ListTile(
-                              title: todos.isEmpty
-                                  ? Text(
-                                      "No",
-                                      style: TextStyle(color: Colors.white),
-                                    )
-                                  : Text(
-                                      todos.keyAt(ind),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  todos.deleteAt(ind);
-                                },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.playlist_play,
+                              color: Colors.white,
+                            ),
+                            title: todos.isEmpty
+                                ? Text(
+                                    "No",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : Text(
+                                    todos.keyAt(ind),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.white,
                               ),
+                              onPressed: () {
+                                todos.deleteAt(ind);
+                              },
                             ),
                           ),
                         );

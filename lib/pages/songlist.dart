@@ -1,12 +1,12 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/database/favorites.dart';
 import 'package:musicsample/database/playlistmodel.dart';
-import 'package:musicsample/pages/addsongtoplaylist.dart';
 import 'package:musicsample/pages/favoritePage.dart';
+import 'package:musicsample/pages/playlistpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import 'playpage.dart';
 
 class Songlist extends StatefulWidget {
@@ -20,6 +20,10 @@ class Songlist extends StatefulWidget {
 }
 
 class _SonglistState extends State<Songlist> {
+  List<dynamic>? k;
+  List<Audio>? audio = [];
+  List<dynamic>? a = [];
+  dynamic playlistbox = Hive.box('playlist');
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
 
   @override
@@ -35,6 +39,11 @@ class _SonglistState extends State<Songlist> {
   var ind = 0;
   @override
   Widget build(BuildContext context) {
+    var playlistbox = Hive.box('playlist');
+
+    final TextEditingController namecontroller = TextEditingController();
+    String? title;
+    // var a = playlistbox.get("title");
     return widget.audios == null
         ? CircularProgressIndicator()
         : Column(
@@ -42,10 +51,9 @@ class _SonglistState extends State<Songlist> {
               Expanded(
                 flex: 4,
                 child: Container(
-                  // height: 550,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
-                    physics: ScrollPhysics(),
+                    physics: BouncingScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -62,7 +70,7 @@ class _SonglistState extends State<Songlist> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PlayPage(
-                                openPlayer: widget.openPlayer,
+                                // openPlayer: widget.openPlayer,
                                 audio: widget.audios,
                                 index: index,
                               ),
@@ -117,18 +125,187 @@ class _SonglistState extends State<Songlist> {
                                               new PopupMenuItem<String>(
                                                 child: GestureDetector(
                                                     onTap: () {
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) =>
-                                                      //         AddLibrary(
-                                                      //       currentindex: widget
-                                                      //           .audios[index],
-                                                      //       audio:
-                                                      //           widget.audios,
-                                                      //     ),
-                                                      //   ),
-                                                      // );
+                                                      showModalBottomSheet<
+                                                          void>(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return Container(
+                                                            color: Colors.black,
+                                                            child: Center(
+                                                              child: Column(
+                                                                children: <
+                                                                    Widget>[
+                                                                  ListView(
+                                                                    shrinkWrap:
+                                                                        true,
+                                                                    scrollDirection:
+                                                                        Axis.vertical,
+                                                                    children: [
+                                                                      ListTile(
+                                                                        title:
+                                                                            GestureDetector(
+                                                                          child:
+                                                                              Text(
+                                                                            '+ Add Playlist',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ),
+                                                                          onTap: () =>
+                                                                              showDialog<String>(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (BuildContext context) {
+                                                                              List<dynamic> dummylist = [];
+                                                                              return AlertDialog(
+                                                                                backgroundColor: Colors.black,
+                                                                                title: Text(
+                                                                                  'Create New Playlist',
+                                                                                  style: TextStyle(
+                                                                                    color: Colors.white,
+                                                                                  ),
+                                                                                ),
+                                                                                actions: [
+                                                                                  TextField(
+                                                                                    controller: namecontroller,
+                                                                                    decoration: InputDecoration(
+                                                                                      filled: true,
+                                                                                      fillColor: Colors.white,
+                                                                                      border: OutlineInputBorder(),
+                                                                                      hintText: 'Playlist Name',
+                                                                                    ),
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    onPressed: () async {
+                                                                                      if (namecontroller != null) {
+                                                                                        title = namecontroller.text;
+                                                                                        title!.isNotEmpty
+                                                                                            ? playlistbox.put(
+                                                                                                title,
+                                                                                                dummylist,
+                                                                                              )
+                                                                                            : playlistbox;
+                                                                                        setState(() {});
+                                                                                        Navigator.pop(context, 'OK');
+                                                                                        namecontroller.clear();
+                                                                                      }
+                                                                                    },
+                                                                                    child: const Text(
+                                                                                      'OK',
+                                                                                      style: TextStyle(
+                                                                                        color: Colors.white,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          playlistbox
+                                                                              .clear();
+                                                                          Navigator
+                                                                              .push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                              builder: (context) => Favorites(
+                                                                                audios: widget.audios,
+                                                                                title: 'Favorites',
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                          List<dynamic>
+                                                                              dummylist =
+                                                                              [];
+                                                                        },
+                                                                        child:
+                                                                            ListTile(
+                                                                          tileColor:
+                                                                              Colors.white30,
+                                                                          title:
+                                                                              Text(
+                                                                            'Favorites',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ),
+                                                                          trailing: Icon(
+                                                                              Icons.favorite,
+                                                                              color: Colors.white),
+                                                                        ),
+                                                                      ),
+                                                                      playlistbox ==
+                                                                              null
+                                                                          ? Text(
+                                                                              'No Data here now',
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            )
+                                                                          : ValueListenableBuilder(
+                                                                              valueListenable: Hive.box('playlist').listenable(),
+                                                                              builder: (context, Box playlist, _) {
+                                                                                Box databox = Hive.box('songbox');
+                                                                                var allsongsfromhive = databox.get('allsongs');
+                                                                                List<dynamic> keys = playlist.keys.toList();
+                                                                                return (ListView.separated(
+                                                                                  physics: ScrollPhysics(),
+                                                                                  scrollDirection: Axis.vertical,
+                                                                                  itemCount: keys.length,
+                                                                                  shrinkWrap: true,
+                                                                                  itemBuilder: (context, ind) {
+                                                                                    return GestureDetector(
+                                                                                      onTap: () {
+                                                                                        List<dynamic> findsong = allsongsfromhive
+                                                                                            .where(
+                                                                                              (element) => element['id'].toString().contains(
+                                                                                                    widget.audios[index].metas.id.toString(),
+                                                                                                  ),
+                                                                                            )
+                                                                                            .toList();
+                                                                                        List<dynamic> playlists = playlistbox.get(keys[ind]);
+                                                                                        playlists.add(findsong.first);
+
+                                                                                        playlistbox.put(keys[ind], playlists);
+                                                                                        print(a);
+                                                                                        setState(() {});
+                                                                                        Navigator.pop(context);
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                                                          SnackBar(
+                                                                                            content: const Text('Song Added In Playlist'),
+                                                                                            duration: const Duration(seconds: 1),
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                      child: ListTile(
+                                                                                        leading: Icon(
+                                                                                          Icons.playlist_play,
+                                                                                          color: Colors.white,
+                                                                                        ),
+                                                                                        title: Text(
+                                                                                          playlist.keyAt(ind),
+                                                                                          style: TextStyle(color: Colors.white),
+                                                                                        ),
+                                                                                        trailing: TextButton(onPressed: () {}, child: Text('Add to Playlist', style: TextStyle(color: Colors.white))),
+                                                                                      ),
+                                                                                    );
+                                                                                  },
+                                                                                  separatorBuilder: (_, index) => Divider(
+                                                                                    color: Colors.white,
+                                                                                  ),
+                                                                                ));
+                                                                              },
+                                                                            )
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
                                                     },
                                                     child: new Text(
                                                         'Add to Playlist')),
@@ -140,15 +317,6 @@ class _SonglistState extends State<Songlist> {
                                                   onTap: () {
                                                     var playlistind =
                                                         Hive.box('fovorites');
-                                                    // Favoritesmodel? a =
-                                                    //     playlistind.get(index);
-                                                    // var a = playlistind.values
-                                                    //     .toList();
-                                                    // .toList();
-                                                    // print(a!.index);
-                                                    // var b = a.contains(index);
-                                                    // b == true
-                                                    //     ?;
 
                                                     playlistind.add(
                                                       Favoritesmodel(
@@ -166,28 +334,12 @@ class _SonglistState extends State<Songlist> {
                                                         ),
                                                       ),
                                                     );
-
-                                                    // Tooltip(
-                                                    //   message: 'Item Added',
-                                                    //   textStyle: TextStyle(
-                                                    //       color: Colors.white),
-                                                    //   decoration: BoxDecoration(
-                                                    //       color: Colors.red),
-                                                    // );
                                                   },
                                                   child: new Text(
                                                       'Add to Favorites'),
                                                 ),
                                                 value: 'Favorites',
-                                                onTap: () {
-                                                  // Navigator.push(
-                                                  //   context,
-                                                  //   MaterialPageRoute(
-                                                  //     builder: (context) =>
-                                                  //         AddLibrary(),
-                                                  //   ),
-                                                  // );
-                                                },
+                                                onTap: () {},
                                               ),
                                             ];
                                           },
@@ -231,7 +383,6 @@ class _SonglistState extends State<Songlist> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PlayPage(
-                                    openPlayer: widget.openPlayer,
                                     audio: widget.audios,
                                     index: 0,
                                   ),
@@ -268,7 +419,6 @@ class _SonglistState extends State<Songlist> {
                       ],
                     ),
                   );
-                  // );
                 },
               )
             ],
