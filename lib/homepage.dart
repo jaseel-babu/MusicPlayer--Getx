@@ -93,7 +93,9 @@ class _HomePageState extends State<HomePage> {
         audios: audio,
         openPlayer: openPlayer,
       ),
-      SearchPage(),
+      SearchPage(
+        audios: audio,
+      ),
       Library(
         audios: audio,
       )

@@ -93,16 +93,16 @@ class _LibraryState extends State<Library> {
           ),
           GestureDetector(
             onTap: () {
-              playlistbox.clear();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Favorites(
-                    audios: widget.audios,
-                    title: 'Favorites',
-                  ),
-                ),
-              );
+              // // playlistbox.clear();
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => Favorites(
+              //       audios: widget.audios,
+              //       title: 'Favorites',
+              //     ),
+              //   ),
+              // );
               List<dynamic> dummylist = [];
             },
             child: ListTile(

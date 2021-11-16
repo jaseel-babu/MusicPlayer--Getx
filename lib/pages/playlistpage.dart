@@ -56,106 +56,106 @@ class _playlistpageState extends State<playlistpage> {
                     context: context,
                     builder: (BuildContext context) {
                       return Container(
-                        height: MediaQuery.of(context).size.height / 1.5,
+                        // height: MediaQuery.of(context).size.height / 1.5,
                         color: Colors.white,
                         child: Center(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Container(
-                                  child: ListView.builder(
-                                    physics: ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: widget.audios.length,
-                                    itemBuilder: (context, index) {
-                                      int image = int.parse(widget
-                                          .audios[index].metas.id
-                                          .toString());
-                                      return ListTile(
-                                        leading: QueryArtworkWidget(
-                                          nullArtworkWidget: FlutterLogo(),
-                                          id: image,
-                                          type: ArtworkType.AUDIO,
-                                        ),
-                                        title: Text(
-                                          widget.audios[index].metas.title
-                                              .toString(),
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        trailing: a
-                                                .where((element) =>
-                                                    element['id'].toString() ==
-                                                    widget
-                                                        .audios[index].metas.id
-                                                        .toString())
-                                                .isEmpty
-                                            ? IconButton(
-                                                onPressed: () {
-                                                  k = allsongsfromhive
-                                                      .where((element) =>
-                                                          element['id']
-                                                              .toString()
-                                                              .contains(widget
-                                                                  .audios[index]
-                                                                  .metas
-                                                                  .id
-                                                                  .toString()))
-                                                      .toList();
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Container(
+                                child: ListView.builder(
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: widget.audios.length,
+                                  itemBuilder: (context, index) {
+                                    int image = int.parse(widget
+                                        .audios[index].metas.id
+                                        .toString());
+                                    return ListTile(
+                                      leading: QueryArtworkWidget(
+                                        nullArtworkWidget: FlutterLogo(),
+                                        id: image,
+                                        type: ArtworkType.AUDIO,
+                                      ),
+                                      title: Text(
+                                        widget.audios[index].metas.title
+                                            .toString(),
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      trailing: a
+                                              .where((element) =>
+                                                  element['id'].toString() ==
+                                                  widget.audios[index].metas.id
+                                                      .toString())
+                                              .isEmpty
+                                          ? IconButton(
+                                              onPressed: () {
+                                                k = allsongsfromhive
+                                                    .where((element) =>
+                                                        element['id']
+                                                            .toString()
+                                                            .contains(widget
+                                                                .audios[index]
+                                                                .metas
+                                                                .id
+                                                                .toString()))
+                                                    .toList();
 
-                                                  print(a);
-                                                  isUserPressed = true;
-                                                  setState(
-                                                    () {
-                                                      a.add(k!.first);
+                                                print(a);
+                                                isUserPressed = true;
+                                                setState(
+                                                  () {
+                                                    a.add(k!.first);
 
-                                                      playlistbox.put(
-                                                          widget.title, a);
-                                                    },
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.add,
-                                                  color: Colors.black,
-                                                ),
-                                              )
-                                            : IconButton(
-                                                onPressed: () {
-                                                  k = allsongsfromhive
-                                                      .where((element) =>
-                                                          element['id']
-                                                              .toString()
-                                                              .contains(widget
-                                                                  .audios[index]
-                                                                  .metas
-                                                                  .id
-                                                                  .toString()))
-                                                      .toList();
-                                                  a = playlistbox
-                                                      .get(widget.title);
-
-                                                  playlistbox.put(
-                                                      widget.title, a);
-                                                  print(a);
-                                                  isUserPressed = true;
-                                                  setState(() {
-                                                    a.remove(k!.first);
-                                                  });
-                                                },
-                                                icon: Icon(
-                                                  Icons.check_box,
-                                                  color: Colors.black,
-                                                ),
+                                                    playlistbox.put(
+                                                        widget.title, a);
+                                                  },
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: Colors.black,
                                               ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
+                                            )
+                                          : IconButton(
+                                              onPressed: () {
+                                                k = allsongsfromhive
+                                                    .where((element) =>
+                                                        element['id']
+                                                            .toString()
+                                                            .contains(widget
+                                                                .audios[index]
+                                                                .metas
+                                                                .id
+                                                                .toString()))
+                                                    .toList();
+                                                a = playlistbox
+                                                    .get(widget.title);
+
+                                                playlistbox.put(
+                                                    widget.title, a);
+                                                print(a);
+                                                isUserPressed = true;
+
+                                                playlistbox(k!.first);
+                                                // a.remove(k!.first);
+                                                // playlistbox.put(
+                                                //     widget.title, a);
+
+                                                setState(() {});
+                                              },
+                                              icon: Icon(
+                                                Icons.check_box,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       );

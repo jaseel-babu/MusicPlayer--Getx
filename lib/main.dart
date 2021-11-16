@@ -13,10 +13,10 @@ Future<void> main() async {
   Hive.registerAdapter(DataModelAdapter());
   Hive.registerAdapter(PlaylistModelmyAdapter());
   // Hive.registerAdapter(playlistindexAdapter());
-  Hive.registerAdapter(FavoritesmodelAdapter());
+  // Hive.registerAdapter(FavoritesmodelAdapter());
   // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
-  await Hive.openBox('fovorites');
+  // await Hive.openBox('fovorites');
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
