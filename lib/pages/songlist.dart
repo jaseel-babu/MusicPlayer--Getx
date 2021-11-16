@@ -178,7 +178,7 @@ class _SonglistState extends State<Songlist> {
                                                                                   ),
                                                                                   TextButton(
                                                                                     onPressed: () async {
-                                                                                      if (namecontroller != null) {
+                                                                                      if (namecontroller.text.isNotEmpty) {
                                                                                         title = namecontroller.text;
                                                                                         title!.isNotEmpty
                                                                                             ? playlistbox.put(
@@ -295,12 +295,15 @@ class _SonglistState extends State<Songlist> {
                                                                                                         ),
                                                                                                       );
                                                                                                     },
-                                                                                                    child: Text('Add to Playlist', style: TextStyle(color: Colors.white)))
+                                                                                                    child: Text(
+                                                                                                      'Add to Playlist',
+                                                                                                      style: TextStyle(color: Colors.white),
+                                                                                                    ),
+                                                                                                  )
                                                                                                 : GestureDetector(
                                                                                                     onTap: () {
                                                                                                       print(findsong.first);
-                                                                                                      playlists.remove(findsong.first);
-
+                                                                                                      playlists.removeWhere((element) => element['id'].toString() == findsong.first['id'].toString());
                                                                                                       Navigator.pop(context);
                                                                                                       ScaffoldMessenger.of(context).showSnackBar(
                                                                                                         SnackBar(

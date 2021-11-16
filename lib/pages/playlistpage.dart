@@ -27,7 +27,6 @@ class _playlistpageState extends State<playlistpage> {
         notificationSettings: NotificationSettings(stopEnabled: false));
   }
 
-  List<dynamic>? k;
   List<Audio> audio = [];
   List<dynamic> a = [];
   dynamic playlistbox = Hive.box('playlist');
@@ -50,7 +49,7 @@ class _playlistpageState extends State<playlistpage> {
               GestureDetector(
                 onTap: () {
                   Box databox = Hive.box('songbox');
-                  var allsongsfromhive = databox.get('allsongs');
+                  List<dynamic> allsongsfromhive = databox.get('allsongs');
                   print(allsongsfromhive[0]['id']);
                   showModalBottomSheet<void>(
                     context: context,
@@ -64,97 +63,9 @@ class _playlistpageState extends State<playlistpage> {
                             // mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Container(
-                                child: ListView.builder(
-                                  physics: ScrollPhysics(),
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: widget.audios.length,
-                                  itemBuilder: (context, index) {
-                                    int image = int.parse(widget
-                                        .audios[index].metas.id
-                                        .toString());
-                                    return ListTile(
-                                      leading: QueryArtworkWidget(
-                                        nullArtworkWidget: FlutterLogo(),
-                                        id: image,
-                                        type: ArtworkType.AUDIO,
-                                      ),
-                                      title: Text(
-                                        widget.audios[index].metas.title
-                                            .toString(),
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                      trailing: a
-                                              .where((element) =>
-                                                  element['id'].toString() ==
-                                                  widget.audios[index].metas.id
-                                                      .toString())
-                                              .isEmpty
-                                          ? IconButton(
-                                              onPressed: () {
-                                                k = allsongsfromhive
-                                                    .where((element) =>
-                                                        element['id']
-                                                            .toString()
-                                                            .contains(widget
-                                                                .audios[index]
-                                                                .metas
-                                                                .id
-                                                                .toString()))
-                                                    .toList();
-
-                                                print(a);
-                                                isUserPressed = true;
-                                                setState(
-                                                  () {
-                                                    a.add(k!.first);
-
-                                                    playlistbox.put(
-                                                        widget.title, a);
-                                                  },
-                                                );
-                                              },
-                                              icon: Icon(
-                                                Icons.add,
-                                                color: Colors.black,
-                                              ),
-                                            )
-                                          : IconButton(
-                                              onPressed: () {
-                                                k = allsongsfromhive
-                                                    .where((element) =>
-                                                        element['id']
-                                                            .toString()
-                                                            .contains(widget
-                                                                .audios[index]
-                                                                .metas
-                                                                .id
-                                                                .toString()))
-                                                    .toList();
-                                                a = playlistbox
-                                                    .get(widget.title);
-
-                                                playlistbox.put(
-                                                    widget.title, a);
-                                                print(a);
-                                                isUserPressed = true;
-
-                                                playlistbox(k!.first);
-                                                // a.remove(k!.first);
-                                                // playlistbox.put(
-                                                //     widget.title, a);
-
-                                                setState(() {});
-                                              },
-                                              icon: Icon(
-                                                Icons.check_box,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                    );
-                                  },
-                                ),
-                              )
+                                  child: bottam(
+                                      audios: widget.audios,
+                                      title: widget.title))
                             ],
                           ),
                         ),
@@ -254,6 +165,95 @@ class _playlistpageState extends State<playlistpage> {
             color: Colors.white,
           ),
         ));
+      },
+    );
+  }
+}
+
+class bottam extends StatefulWidget {
+  List<dynamic> audios;
+  String title;
+  bottam({Key? key, required this.audios, required this.title})
+      : super(key: key);
+
+  @override
+  _bottamState createState() => _bottamState();
+}
+
+class _bottamState extends State<bottam> {
+  List<Audio> audio = [];
+  dynamic playlistbox = Hive.box('playlist');
+  List<dynamic> a = [];
+  @override
+  Widget build(BuildContext context) {
+    Box databox = Hive.box('songbox');
+    List<dynamic> allsongsfromhive = databox.get('allsongs');
+    return ListView.builder(
+      physics: ScrollPhysics(),
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemCount: widget.audios.length,
+      itemBuilder: (context, index) {
+        final k = allsongsfromhive.firstWhere((element) => element['id']
+            .toString()
+            .contains(widget.audios[index].metas.id.toString()));
+        int image = int.parse(widget.audios[index].metas.id.toString());
+        return ListTile(
+          leading: QueryArtworkWidget(
+            nullArtworkWidget: FlutterLogo(),
+            id: image,
+            type: ArtworkType.AUDIO,
+          ),
+          title: Text(
+            widget.audios[index].metas.title.toString(),
+            style: TextStyle(color: Colors.black),
+          ),
+          trailing: a
+                  .where((element) =>
+                      element['id'].toString() ==
+                      widget.audios[index].metas.id.toString())
+                  .isEmpty
+              ? GestureDetector(
+                  onTap: () {
+                    // k = allsongsfromhive
+                    //     .where((element) =>
+                    //         element['id']
+                    //             .toString()
+                    //             .contains(widget
+                    //                 .audios[index]
+                    //                 .metas
+                    //                 .id
+                    //                 .toString()))
+                    //     .toList();
+                    print(a);
+                    a.add(k);
+
+                    playlistbox.put(widget.title, a);
+                    setState(
+                      () {},
+                    );
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      a = playlistbox.get(widget.title);
+                      print(a);
+                      a.removeWhere((element) =>
+                          element['id'].toString() == k['id'].toString());
+                      playlistbox.put(widget.title, a);
+                    });
+                  },
+                  child: Icon(
+                    Icons.check_box,
+                    color: Colors.black,
+                  ),
+                ),
+        );
       },
     );
   }
