@@ -65,7 +65,9 @@ class _SonglistState extends State<Songlist> {
                           int.parse(widget.audios[index].metas.id.toString());
                       return GestureDetector(
                         onTap: () {
-                          widget.openPlayer(index);
+                          widget.openPlayer(
+                            index,
+                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -93,7 +95,8 @@ class _SonglistState extends State<Songlist> {
                                     width: 150,
                                     height: 120,
                                     child: QueryArtworkWidget(
-                                      nullArtworkWidget: FlutterLogo(),
+                                      nullArtworkWidget: Image.asset(
+                                          'assets/images/defaultImage.jpg'),
                                       id: image,
                                       type: ArtworkType.AUDIO,
                                     ),

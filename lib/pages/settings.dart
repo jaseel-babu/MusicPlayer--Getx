@@ -57,6 +57,11 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ListTile(
             onTap: () => showAboutDialog(
+                applicationIcon: Image.asset(
+                  'assets/images/logo.jpeg',
+                  width: 50,
+                  height: 50,
+                ),
                 context: context,
                 applicationName: 'Music app',
                 applicationVersion: '1.0.0'),

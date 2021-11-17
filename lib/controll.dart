@@ -8,15 +8,16 @@ class PlayingControls extends StatelessWidget {
   final Function()? onPrevious;
   final Function() onPlay;
   final Function()? onNext;
+  final Function()? onRepeat;
 
-  PlayingControls({
-    required this.isPlaying,
-    this.isPlaylist = false,
-    this.loopMode,
-    this.onPrevious,
-    required this.onPlay,
-    this.onNext,
-  });
+  PlayingControls(
+      {required this.isPlaying,
+      this.isPlaylist = false,
+      this.loopMode,
+      this.onPrevious,
+      required this.onPlay,
+      this.onNext,
+      this.onRepeat});
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +47,14 @@ class PlayingControls extends StatelessWidget {
           color: Colors.white,
           iconSize: 32,
         ),
-        // Container(
-        //   margin: EdgeInsets.only(top: 8, left: 5),
-        //   child: IconButton(
-        //     onPressed: onNext,
-        //     icon: Icon(Icons.favorite),
+        // IconButton(
+        //   onPressed: onRepeat,
+        //   icon: Icon(
+        //     Icons.repeat,
         //     color: Colors.white,
-        //     iconSize: 28,
+        //     size: 32,
         //   ),
-        // ),
+        // )
       ],
     );
   }

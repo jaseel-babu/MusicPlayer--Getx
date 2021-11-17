@@ -109,6 +109,8 @@ class _PlayPageState extends State<PlayPage> {
                                   width: 250,
                                   height: 200,
                                   child: QueryArtworkWidget(
+                                    nullArtworkWidget: Image.asset(
+                                        'assets/images/defaultImage.jpg'),
                                     id: image,
                                     type: ArtworkType.AUDIO,
                                   ),
@@ -176,20 +178,33 @@ class _PlayPageState extends State<PlayPage> {
                                       PlayerBuilder.isPlaying(
                                         player: assetsAudioPlayer,
                                         builder: (context, isPlaying) {
+                                          bool nextDone = true;
+                                          bool prevDone = true;
                                           return PlayingControls(
                                             // loopMode: loopMode,
                                             isPlaying: isPlaying,
                                             isPlaylist: true,
-
                                             onPlay: () {
                                               assetsAudioPlayer.playOrPause();
                                             },
-                                            onNext: () {
-                                              assetsAudioPlayer.next();
+                                            onNext: () async {
+                                              // if (nextDone) {
+                                              //   nextDone = false;
+                                              await assetsAudioPlayer.next();
+                                              // nextDone = true;
+                                              // }
                                             },
-                                            onPrevious: () {
-                                              assetsAudioPlayer.previous();
+                                            onPrevious: () async {
+                                              // if (prevDone) {
+                                              //   prevDone = false;
+                                              await assetsAudioPlayer
+                                                  .previous();
+                                              //   prevDone = true;
+                                              // }
                                             },
+                                            // onRepeat: () {
+                                            //   assetsAudioPlayer.loopMode;
+                                            // },
                                           );
                                         },
                                       )

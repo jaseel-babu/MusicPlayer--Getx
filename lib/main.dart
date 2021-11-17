@@ -37,7 +37,7 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
-  final assetsAudioPlayer = AssetsAudioPlayer.withId('0');
+  final assetsAudioPlayer = AssetsAudioPlayer.withId('music');
 
   @override
   void initState() {
@@ -58,12 +58,9 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    bool lightMode =
-        MediaQuery.of(context).platformBrightness == Brightness.light;
     return Scaffold(
-      backgroundColor:
-          lightMode ? const Color(0xffe1f5fe) : const Color(0xff042a49),
-      body: Center(child: FlutterLogo()),
+      backgroundColor: Colors.black,
+      body: Center(child: Image.asset('assets/images/logo.jpeg')),
     );
   }
 }
@@ -73,7 +70,7 @@ class Init {
   static final instance = Init._();
 
   Future initialize() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
   }
 }
 
@@ -86,7 +83,8 @@ class MyApp extends StatelessWidget {
         future: Init.instance.initialize(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const MaterialApp(home: Splash());
+            return const MaterialApp(
+                home: Splash(), debugShowCheckedModeBanner: false);
           } else {
             return HomePage();
           }

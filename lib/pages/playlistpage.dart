@@ -47,37 +47,21 @@ class _playlistpageState extends State<playlistpage> {
           child: Column(
             children: [
               GestureDetector(
-                onTap: () {
-                  Box databox = Hive.box('songbox');
-                  List<dynamic> allsongsfromhive = databox.get('allsongs');
-                  print(allsongsfromhive[0]['id']);
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        // height: MediaQuery.of(context).size.height / 1.5,
-                        color: Colors.white,
-                        child: Center(
-                          child: Column(
-                            // mainAxisAlignment: MainAxisAlignment.center,
-                            // mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                  child: bottam(
-                                      audios: widget.audios,
-                                      title: widget.title))
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Text(
-                  '+ Add Song Into This PlayList',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+                  onTap: () {
+                    Box databox = Hive.box('songbox');
+                    List<dynamic> allsongsfromhive = databox.get('allsongs');
+                    print(allsongsfromhive[0]['id']);
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (context) {
+                        return bottam(name: widget.title);
+                      },
+                    );
+                  },
+                  child: Text(
+                    '+ Add Song Into This PlayList',
+                    style: TextStyle(color: Colors.white),
+                  )),
               playlistList()
             ],
           ),
@@ -114,50 +98,30 @@ class _playlistpageState extends State<playlistpage> {
           itemCount: keys.length,
           shrinkWrap: true,
           itemBuilder: (context, ind) {
-            return GestureDetector(
+            return ListTile(
+              title: Text(
+                keys[ind]['title'],
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => PlaylistPage(
-                //       title: todos.keyAt(ind),
-                //       curindex: widget.audios[ind],
-                //     ),
-                //   ),
-                // );
+                openPlayer(ind);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayPage(audio: audio, index: ind),
+                  ),
+                );
               },
-              child: GestureDetector(
-                onTap: () {
-                  openPlayer(ind);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlayPage(audio: audio, index: ind),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  // onTap: () {
-                  //   print(audio.length.toString() +
-                  //       "-----------------------------");
-                  // },
-                  title: Text(
-                    keys[ind]['title'],
-                    // audio[ind].metas.title.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      keys.removeAt(ind);
-                      setState(() {});
-                      // todos.deleteAt(keys[ind]);
-                    },
-                  ),
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.white,
                 ),
+                onPressed: () {
+                  keys.removeAt(ind);
+                  setState(() {});
+                  // todos.deleteAt(keys[ind]);
+                },
               ),
             );
           },
@@ -171,67 +135,46 @@ class _playlistpageState extends State<playlistpage> {
 }
 
 class bottam extends StatefulWidget {
-  List<dynamic> audios;
-  String title;
-  bottam({Key? key, required this.audios, required this.title})
-      : super(key: key);
-
+  bottam({Key? key, required this.name}) : super(key: key);
+  final name;
   @override
   _bottamState createState() => _bottamState();
 }
 
 class _bottamState extends State<bottam> {
-  List<Audio> audio = [];
-  dynamic playlistbox = Hive.box('playlist');
+  Box playlistbox = Hive.box('playlist');
   List<dynamic> a = [];
   @override
   Widget build(BuildContext context) {
     Box databox = Hive.box('songbox');
     List<dynamic> allsongsfromhive = databox.get('allsongs');
+    List<dynamic> playlist = playlistbox.get(widget.name);
     return ListView.builder(
       physics: ScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      itemCount: widget.audios.length,
+      itemCount: allsongsfromhive.length,
       itemBuilder: (context, index) {
-        final k = allsongsfromhive.firstWhere((element) => element['id']
-            .toString()
-            .contains(widget.audios[index].metas.id.toString()));
-        int image = int.parse(widget.audios[index].metas.id.toString());
         return ListTile(
           leading: QueryArtworkWidget(
             nullArtworkWidget: FlutterLogo(),
-            id: image,
+            id: allsongsfromhive[index]['id'],
             type: ArtworkType.AUDIO,
           ),
           title: Text(
-            widget.audios[index].metas.title.toString(),
+            allsongsfromhive[index]['title'],
             style: TextStyle(color: Colors.black),
           ),
-          trailing: a
+          trailing: playlist
                   .where((element) =>
-                      element['id'].toString() ==
-                      widget.audios[index].metas.id.toString())
+                      element["id"].toString() ==
+                      allsongsfromhive[index]["id"].toString())
                   .isEmpty
               ? GestureDetector(
                   onTap: () {
-                    // k = allsongsfromhive
-                    //     .where((element) =>
-                    //         element['id']
-                    //             .toString()
-                    //             .contains(widget
-                    //                 .audios[index]
-                    //                 .metas
-                    //                 .id
-                    //                 .toString()))
-                    //     .toList();
-                    print(a);
-                    a.add(k);
-
-                    playlistbox.put(widget.title, a);
-                    setState(
-                      () {},
-                    );
+                    playlist.add(allsongsfromhive[index]);
+                    playlistbox.put(widget.name, playlist);
+                    setState(() {});
                   },
                   child: Icon(
                     Icons.add,
@@ -240,13 +183,11 @@ class _bottamState extends State<bottam> {
                 )
               : GestureDetector(
                   onTap: () {
-                    setState(() {
-                      a = playlistbox.get(widget.title);
-                      print(a);
-                      a.removeWhere((element) =>
-                          element['id'].toString() == k['id'].toString());
-                      playlistbox.put(widget.title, a);
-                    });
+                    playlist.removeWhere((element) =>
+                        element['id'].toString() ==
+                        allsongsfromhive[index]['id'].toString());
+                    playlistbox.put(widget.name, playlist);
+                    setState(() {});
                   },
                   child: Icon(
                     Icons.check_box,
