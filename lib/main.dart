@@ -16,6 +16,7 @@ Future<void> main() async {
   // Hive.registerAdapter(FavoritesmodelAdapter());
   // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
+
   // await Hive.openBox('fovorites');
   runApp(
     MaterialApp(
@@ -70,24 +71,32 @@ class Init {
   static final instance = Init._();
 
   Future initialize() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 3));
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final OnAudioQuery _audioQuery = OnAudioQuery();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Init.instance.initialize(),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const MaterialApp(
-                home: Splash(), debugShowCheckedModeBanner: false);
-          } else {
-            return HomePage();
-          }
-        });
+      future: Init.instance.initialize(),
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+              home: Splash(), debugShowCheckedModeBanner: false);
+        } else {
+          return HomePage();
+        }
+      },
+    );
   }
 }

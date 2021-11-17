@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.musicsample">
    <application
-        android:label="Jmusic"
         android:requestLegacyExternalStorage="true"
+        android:label="musicsample"
         android:icon="@mipmap/ic_launcher">
-        <activity
+        <activity   
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

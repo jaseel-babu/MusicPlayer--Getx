@@ -1,7 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:musicsample/duration.dart';
-
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import '../controll.dart';
@@ -77,6 +76,9 @@ class _PlayPageState extends State<PlayPage> {
                 color: Colors.white,
               ),
             ),
+            SizedBox(
+              width: 20,
+            )
           ],
         ),
         body: assetsAudioPlayer.builderCurrent(
@@ -155,13 +157,12 @@ class _PlayPageState extends State<PlayPage> {
                                       style: TextStyle(color: Colors.white),
                                     );
                                   }
-
                                   return Column(
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(25.0),
                                         child: ProgressBar(
-                                          thumbRadius: 0.0,
+                                          thumbRadius: 8.0,
                                           thumbColor: Colors.white,
                                           progressBarColor: Colors.pink[900],
                                           progress: currentinfo.currentPosition,
@@ -188,19 +189,19 @@ class _PlayPageState extends State<PlayPage> {
                                               assetsAudioPlayer.playOrPause();
                                             },
                                             onNext: () async {
-                                              // if (nextDone) {
-                                              //   nextDone = false;
-                                              await assetsAudioPlayer.next();
-                                              // nextDone = true;
-                                              // }
+                                              if (nextDone) {
+                                                nextDone = false;
+                                                await assetsAudioPlayer.next();
+                                                nextDone = true;
+                                              }
                                             },
                                             onPrevious: () async {
-                                              // if (prevDone) {
-                                              //   prevDone = false;
-                                              await assetsAudioPlayer
-                                                  .previous();
-                                              //   prevDone = true;
-                                              // }
+                                              if (prevDone) {
+                                                prevDone = false;
+                                                await assetsAudioPlayer
+                                                    .previous();
+                                                prevDone = true;
+                                              }
                                             },
                                             // onRepeat: () {
                                             //   assetsAudioPlayer.loopMode;

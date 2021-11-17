@@ -10,7 +10,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final assetsAudioPlayer = AssetsAudioPlayer();
-  bool isSwitched = false;
+  bool isSwitched = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     assetsAudioPlayer.showNotification = true;
                   },
                 );
+                setState(() {});
               },
               inactiveTrackColor: Colors.white,
               activeTrackColor: Colors.white,

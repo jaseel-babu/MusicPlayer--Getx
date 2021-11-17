@@ -2,10 +2,6 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:musicsample/database/favorites.dart';
-import 'package:musicsample/database/playlistmodel.dart';
-import 'package:musicsample/pages/favoritePage.dart';
-import 'package:musicsample/pages/playlistpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'playpage.dart';
 
@@ -23,13 +19,8 @@ class _SonglistState extends State<Songlist> {
   List<dynamic>? k;
   List<Audio>? audio = [];
   List<dynamic>? a = [];
-  dynamic playlistbox = Hive.box('playlist');
-  AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
 
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
@@ -39,6 +30,7 @@ class _SonglistState extends State<Songlist> {
   var ind = 0;
   @override
   Widget build(BuildContext context) {
+    // dynamic playlistbox = Hive.box('playlist');
     var playlistbox = Hive.box('playlist');
 
     final TextEditingController namecontroller = TextEditingController();
