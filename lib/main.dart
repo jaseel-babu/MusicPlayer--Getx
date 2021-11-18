@@ -16,6 +16,7 @@ Future<void> main() async {
   // Hive.registerAdapter(FavoritesmodelAdapter());
   // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
+  await Hive.openBox('songbox');
 
   // await Hive.openBox('fovorites');
   runApp(
@@ -43,19 +44,19 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    requestpermission();
+    // requestpermission();
   }
 
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
   }
 
-  Future<void> requestpermission() async {
-    bool permissionStatus = await _audioQuery.permissionsStatus();
-    if (!permissionStatus) {
-      await _audioQuery.permissionsRequest();
-    }
-  }
+  // Future<void> requestpermission() async {
+  //   bool permissionStatus = await _audioQuery.permissionsStatus();
+  //   if (!permissionStatus) {
+  //     await _audioQuery.permissionsRequest();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,58 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  List<Audio> audio = [];
+  List<SongModel> getsongs = [];
+  List allsongsfromhive = [];
+  List datasongs = [];
+  Box databox = Hive.box('songbox');
   final OnAudioQuery _audioQuery = OnAudioQuery();
+  @override
+  void initState() {
+    super.initState();
+    requestpermission();
+  }
+
+  Future<void> requestpermission() async {
+    bool permissionStatus = await _audioQuery.permissionsStatus();
+    if (!permissionStatus) {
+      await _audioQuery.permissionsRequest();
+    }
+
+    getsongs = await _audioQuery.querySongs(
+        sortType: null,
+        orderType: OrderType.ASC_OR_SMALLER,
+        uriType: UriType.EXTERNAL,
+        ignoreCase: true);
+    getsongs.forEach((element) {
+      datasongs.add({
+        'title': element.title,
+        'artist': element.artist,
+        'id': element.id,
+        'uri': element.uri,
+        'album': element.album,
+        'duration': element.duration,
+      });
+      databox.put('allsongs', datasongs);
+      allsongsfromhive = databox.get('allsongs');
+    });
+    for (var i = 0; i <= allsongsfromhive.length - 1; i++) {
+      var newaudio = Audio.file(
+        allsongsfromhive[i]['uri'].toString(),
+        metas: Metas(
+          id: allsongsfromhive[i]['id'].toString(),
+          title: allsongsfromhive[i]['title'],
+          album: allsongsfromhive[i]['album'],
+          artist: allsongsfromhive[i]['artist'],
+          image: MetasImage.file(
+            allsongsfromhive[i]['uri'].toString(),
+          ),
+        ),
+      );
+      audio.add(newaudio);
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +146,9 @@ class _MyAppState extends State<MyApp> {
           return const MaterialApp(
               home: Splash(), debugShowCheckedModeBanner: false);
         } else {
-          return HomePage();
+          return HomePage(
+            audio: audio,
+          );
         }
       },
     );

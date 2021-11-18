@@ -2,6 +2,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:musicsample/pages/playpage.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class SearchPage extends StatefulWidget {
   List<Audio> audios;
@@ -17,15 +18,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
-  void openPlayer(
-    int index,
-  ) async {
-    await assetsAudioPlayer.open(
-        Playlist(audios: widget.audios, startIndex: index),
-        showNotification: true,
-        autoStart: true,
-        notificationSettings: NotificationSettings(stopEnabled: false));
-  }
 
   String searchText = "";
   List<Audio> xt = [];
@@ -41,6 +33,16 @@ class _SearchPageState extends State<SearchPage> {
                   ),
             )
             .toList();
+    void openPlayer(
+      int index,
+    ) async {
+      await assetsAudioPlayer.open(
+        Playlist(audios: result, startIndex: index),
+        showNotification: true,
+        autoStart: true,
+        notificationSettings: NotificationSettings(stopEnabled: false),
+      );
+    }
 
     return Column(
       children: [
@@ -49,11 +51,8 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             onChanged: (value) {
               Future.delayed(Duration(seconds: 2), () {
-                setState(
-                  () {
-                    searchText = value;
-                  },
-                );
+                setState(() {});
+                searchText = value;
               });
             },
             decoration: InputDecoration(
@@ -66,7 +65,7 @@ class _SearchPageState extends State<SearchPage> {
 
         result.isNotEmpty
             ? Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemCount: result.length,
@@ -84,13 +83,34 @@ class _SearchPageState extends State<SearchPage> {
                         );
                       },
                       child: ListTile(
+                        leading: QueryArtworkWidget(
+                          nullArtworkWidget:
+                              Image.asset('assets/images/defaultImage.jpg'),
+                          id: int.parse(result[index].metas.id.toString()),
+                          type: ArtworkType.AUDIO,
+                        ),
                         title: Text(
                           result[index].metas.title.toString(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          result[index].metas.artist.toString(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        trailing: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white,
                         ),
                       ),
                     );
                   },
+                  separatorBuilder: (context, index) => Divider(
+                    color: Colors.white,
+                  ),
                 ),
               )
             : SizedBox()

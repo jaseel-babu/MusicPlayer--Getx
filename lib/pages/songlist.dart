@@ -16,6 +16,11 @@ class Songlist extends StatefulWidget {
 }
 
 class _SonglistState extends State<Songlist> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   List<dynamic>? k;
   List<Audio>? audio = [];
   List<dynamic>? a = [];
@@ -385,6 +390,7 @@ class _SonglistState extends State<Songlist> {
               assetsAudioPlayer.builderCurrent(
                 builder: (context, Playing? playing) {
                   myAudio = find(widget.audios, playing!.audio.assetAudioPath);
+                  var image = int.parse(myAudio!.metas.id!);
                   return Expanded(
                     flex: 1,
                     child: Column(
@@ -421,6 +427,12 @@ class _SonglistState extends State<Songlist> {
                                 color: Colors.pink[900],
                               ),
                               child: ListTile(
+                                leading: QueryArtworkWidget(
+                                  nullArtworkWidget: Image.asset(
+                                      'assets/images/defaultImage.jpg'),
+                                  id: image,
+                                  type: ArtworkType.AUDIO,
+                                ),
                                 title: Text(
                                   myAudio!.metas.title!,
                                   maxLines: 1,

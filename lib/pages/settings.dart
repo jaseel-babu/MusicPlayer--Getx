@@ -22,54 +22,75 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         title: Text('Settings'),
       ),
-      body: ListView(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ListTile(
-            leading: Text(
-              'Notification',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            trailing: Switch(
-              value: isSwitched,
-              onChanged: (value) {
-                setState(
-                  () {
-                    isSwitched = value;
-                    assetsAudioPlayer.showNotification = true;
-                  },
-                );
-                setState(() {});
-              },
-              inactiveTrackColor: Colors.white,
-              activeTrackColor: Colors.white,
+          Expanded(
+            child: Container(
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: Text(
+                      'Notification',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    trailing: Switch(
+                      value: isSwitched,
+                      onChanged: (value) {
+                        setState(
+                          () {
+                            isSwitched = value;
+                            assetsAudioPlayer.showNotification = true;
+                          },
+                        );
+                        setState(() {});
+                      },
+                      inactiveTrackColor: Colors.white,
+                      activeTrackColor: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Text(
+                      'Privacy and Policy',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Text(
+                      'Terms And Conditions',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () => showAboutDialog(
+                        applicationIcon: Image.asset(
+                          'assets/images/logo.jpeg',
+                          width: 50,
+                          height: 50,
+                        ),
+                        context: context,
+                        applicationName: 'Music app',
+                        applicationVersion: '1.0.0'),
+                    leading: Text(
+                      'About',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          ListTile(
-            leading: Text(
-              'Privacy and Policy',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
-          ListTile(
-            leading: Text(
-              'Terms And Conditions',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
-          ListTile(
-            onTap: () => showAboutDialog(
-                applicationIcon: Image.asset(
-                  'assets/images/logo.jpeg',
-                  width: 50,
-                  height: 50,
-                ),
-                context: context,
-                applicationName: 'Music app',
-                applicationVersion: '1.0.0'),
-            leading: Text(
-              'About',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Version 1.0.0',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                height: 50,
+              )
+            ],
           )
         ],
       ),

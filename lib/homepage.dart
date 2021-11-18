@@ -8,9 +8,8 @@ import 'pages/searchpage.dart';
 import 'pages/songlist.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({
-    Key? key,
-  }) : super(key: key);
+  List<Audio> audio;
+  HomePage({Key? key, required this.audio}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -18,58 +17,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
+  int _selectedIndex = 0;
 
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   @override
   void initState() {
     super.initState();
 
-    getSongs();
+    // requestpermission();
+    // getSongs();
   }
-
-  List<Audio> audio = [];
-  List<SongModel> getsongs = [];
-  List allsongsfromhive = [];
-  List datasongs = [];
-  getSongs() async {
-    Box databox = await Hive.openBox('songbox');
-
-    getsongs = await _audioQuery.querySongs(
-        sortType: null,
-        orderType: OrderType.ASC_OR_SMALLER,
-        uriType: UriType.EXTERNAL,
-        ignoreCase: true);
-    getsongs.forEach((element) {
-      datasongs.add({
-        'title': element.title,
-        'artist': element.artist,
-        'id': element.id,
-        'uri': element.uri,
-        'album': element.album,
-        'duration': element.duration,
-      });
-      databox.put('allsongs', datasongs);
-      allsongsfromhive = databox.get('allsongs');
-    });
-    for (var i = 0; i <= allsongsfromhive.length - 1; i++) {
-      var newaudio = Audio.file(
-        allsongsfromhive[i]['uri'].toString(),
-        metas: Metas(
-          id: allsongsfromhive[i]['id'].toString(),
-          title: allsongsfromhive[i]['title'],
-          album: allsongsfromhive[i]['album'],
-          artist: allsongsfromhive[i]['artist'],
-          image: MetasImage.file(
-            allsongsfromhive[i]['uri'].toString(),
-          ),
-        ),
-      );
-      audio.add(newaudio);
-    }
-    setState(() {});
-  }
-
-  int _selectedIndex = 0;
 
   void onItemTapped(int index) {
     setState(() {
@@ -80,7 +37,8 @@ class _HomePageState extends State<HomePage> {
   void openPlayer(
     int index,
   ) async {
-    await assetsAudioPlayer.open(Playlist(audios: audio, startIndex: index),
+    await assetsAudioPlayer.open(
+        Playlist(audios: widget.audio, startIndex: index),
         showNotification: true,
         autoStart: true,
         notificationSettings: NotificationSettings(stopEnabled: false));
@@ -90,14 +48,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = [
       Songlist(
-        audios: audio,
+        audios: widget.audio,
         openPlayer: openPlayer,
       ),
       SearchPage(
-        audios: audio,
+        audios: widget.audio,
       ),
       Library(
-        audios: audio,
+        audios: widget.audio,
       )
     ];
     // getSongs();
