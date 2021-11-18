@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'favoritePage.dart';
 import 'playpage.dart';
 
 class Songlist extends StatefulWidget {
@@ -204,36 +205,6 @@ class _SonglistState extends State<Songlist> {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      // GestureDetector(
-                                                                      //   onTap:
-                                                                      //       () {
-                                                                      //     playlistbox.clear();
-                                                                      //     // Navigator.push(
-                                                                      //     //   context,
-                                                                      //     //   MaterialPageRoute(
-                                                                      //     //     builder: (context) => Favorites(
-                                                                      //     //       audios: widget.audios,
-                                                                      //     //       title: 'Favorites',
-                                                                      //     //     ),
-                                                                      //     //   ),
-                                                                      //     // );
-                                                                      //     List<dynamic>
-                                                                      //         dummylist =
-                                                                      //         [];
-                                                                      //   },
-                                                                      //   child:
-                                                                      //       ListTile(
-                                                                      //     tileColor:
-                                                                      //         Colors.white30,
-                                                                      //     title:
-                                                                      //         Text(
-                                                                      //       'Favorites',
-                                                                      //       style: TextStyle(color: Colors.white),
-                                                                      //     ),
-                                                                      //     trailing:
-                                                                      //         Icon(Icons.favorite, color: Colors.white),
-                                                                      //   ),
-                                                                      // ),
                                                                       playlistbox ==
                                                                               null
                                                                           ? Text(
@@ -282,7 +253,6 @@ class _SonglistState extends State<Songlist> {
                                                                                             child: playlists.where((element) => element['id'].toString() == widget.audios[index].metas.id.toString()).isEmpty
                                                                                                 ? GestureDetector(
                                                                                                     onTap: () {
-                                                                                                      // List<dynamic> playlists = playlistbox.get(keys[ind]);
                                                                                                       playlists.add(findsong.first);
                                                                                                       playlistbox.put(keys[ind], playlists);
 
@@ -340,7 +310,6 @@ class _SonglistState extends State<Songlist> {
                                                     child: new Text(
                                                         'Add to Playlist')),
                                                 value: 'Add playlist',
-                                                onTap: () {},
                                               ),
                                               new PopupMenuItem<String>(
                                                 child: GestureDetector(
@@ -364,6 +333,18 @@ class _SonglistState extends State<Songlist> {
                                                     //     ),
                                                     //   ),
                                                     // );
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: const Text(
+                                                            'Song added to favorites'),
+                                                        duration:
+                                                            const Duration(
+                                                                seconds: 1),
+                                                      ),
+                                                    );
+                                                    Navigator.pop(context);
                                                   },
                                                   child: new Text(
                                                       'Add to Favorites'),

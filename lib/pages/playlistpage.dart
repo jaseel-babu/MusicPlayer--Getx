@@ -101,7 +101,21 @@ class _playlistpageState extends State<playlistpage> {
             return ListTile(
               title: Text(
                 keys[ind]['title'],
-                style: TextStyle(color: Colors.white),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              leading: QueryArtworkWidget(
+                nullArtworkWidget:
+                    Image.asset('assets/images/defaultImage.jpg'),
+                id: keys[ind]['id'],
+                type: ArtworkType.AUDIO,
+              ),
+              subtitle: Text(
+                keys[ind]['artist'],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               onTap: () {
                 openPlayer(ind);

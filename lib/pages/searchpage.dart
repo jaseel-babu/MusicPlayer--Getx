@@ -93,7 +93,10 @@ class _SearchPageState extends State<SearchPage> {
                           result[index].metas.title.toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
                         ),
                         subtitle: Text(
                           result[index].metas.artist.toString(),
