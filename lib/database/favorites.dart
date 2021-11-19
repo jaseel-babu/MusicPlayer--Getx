@@ -1,10 +1,9 @@
 import 'package:hive/hive.dart';
 part 'favorites.g.dart';
 
-@HiveType(typeId: 4)
-class favoritesmodel extends HiveObject {
+@HiveType(typeId: 3)
+class Favoritesmodel extends HiveObject {
   @HiveField(0)
-  late dynamic favorites;
-
-  favoritesmodel({required this.favorites});
+  late dynamic songs;
+  Favoritesmodel({required this.songs});
 }

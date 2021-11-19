@@ -2,22 +2,34 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:musicsample/database/datamodel.dart';
+import 'package:musicsample/database/favorites.dart';
 import 'package:musicsample/database/playlistmodel.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'homepage.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DataModelAdapter());
   Hive.registerAdapter(PlaylistModelmyAdapter());
   // Hive.registerAdapter(playlistindexAdapter());
-  // Hive.registerAdapter(FavoritesmodelAdapter());
+  Hive.registerAdapter(FavoritesmodelAdapter());
   // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
   await Hive.openBox('songbox');
+  await Hive.openBox('fav');
+  var favoritesbox = Hive.box('fav');
 
-  // await Hive.openBox('fovorites');
+  List<dynamic>? c = favoritesbox.keys.toList();
+  if (c.isEmpty) {
+    List<dynamic> dummy = [];
+    favoritesbox.put('favsong', dummy);
+  }
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -115,6 +127,7 @@ class _MyAppState extends State<MyApp> {
         'album': element.album,
         'duration': element.duration,
       });
+
       databox.put('allsongs', datasongs);
       allsongsfromhive = databox.get('allsongs');
     });

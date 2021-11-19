@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/database/playlistmodel.dart';
+import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -18,14 +19,6 @@ class playlistpage extends StatefulWidget {
 
 class _playlistpageState extends State<playlistpage> {
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
-  void openPlayer(
-    int index,
-  ) async {
-    await assetsAudioPlayer.open(Playlist(audios: audio, startIndex: index),
-        showNotification: true,
-        autoStart: true,
-        notificationSettings: NotificationSettings(stopEnabled: false));
-  }
 
   List<Audio> audio = [];
   List<dynamic> a = [];
@@ -118,7 +111,7 @@ class _playlistpageState extends State<playlistpage> {
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               onTap: () {
-                openPlayer(ind);
+                OpenPlayer().openPlayer(ind, audio);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

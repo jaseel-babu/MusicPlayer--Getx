@@ -1,6 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -33,16 +34,6 @@ class _SearchPageState extends State<SearchPage> {
                   ),
             )
             .toList();
-    void openPlayer(
-      int index,
-    ) async {
-      await assetsAudioPlayer.open(
-        Playlist(audios: result, startIndex: index),
-        showNotification: true,
-        autoStart: true,
-        notificationSettings: NotificationSettings(stopEnabled: false),
-      );
-    }
 
     return Column(
       children: [
@@ -62,7 +53,6 @@ class _SearchPageState extends State<SearchPage> {
                 hintText: 'Search'),
           ),
         ),
-
         result.isNotEmpty
             ? Expanded(
                 child: ListView.separated(
@@ -73,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
                     print(result);
                     return GestureDetector(
                       onTap: () {
-                        openPlayer(index);
+                        OpenPlayer().openPlayer(index, widget.audios);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -117,49 +107,6 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               )
             : SizedBox()
-
-        // Padding(
-        //   padding: const EdgeInsets.all(15.0),
-        //   child: ListTile(
-        //     trailing: Icon(
-        //       Icons.play_arrow,
-        //       color: Colors.white,
-        //     ),
-        //     tileColor: Colors.grey[800],
-        //     title: Text(
-        //       'Darshana',
-        //       style: TextStyle(color: Colors.white),
-        //     ),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(15.0),
-        //   child: ListTile(
-        //     trailing: Icon(
-        //       Icons.play_arrow,
-        //       color: Colors.white,
-        //     ),
-        //     tileColor: Colors.grey[800],
-        //     title: Text(
-        //       'Darshana',
-        //       style: TextStyle(color: Colors.white),
-        //     ),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(15.0),
-        //   child: ListTile(
-        //     trailing: Icon(
-        //       Icons.play_arrow,
-        //       color: Colors.white,
-        //     ),
-        //     tileColor: Colors.grey[800],
-        //     title: Text(
-        //       'Darshana',
-        //       style: TextStyle(color: Colors.white),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }

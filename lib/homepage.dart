@@ -34,22 +34,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void openPlayer(
-    int index,
-  ) async {
-    await assetsAudioPlayer.open(
-        Playlist(audios: widget.audio, startIndex: index),
-        showNotification: true,
-        autoStart: true,
-        notificationSettings: NotificationSettings(stopEnabled: false));
-  }
-
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = [
       Songlist(
         audios: widget.audio,
-        openPlayer: openPlayer,
       ),
       SearchPage(
         audios: widget.audio,

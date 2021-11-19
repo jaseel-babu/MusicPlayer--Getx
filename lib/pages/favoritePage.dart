@@ -2,112 +2,110 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/functionalities/openPlayer.dart';
+import 'package:musicsample/pages/playpage.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
-class Favorites extends StatefulWidget {
-  int? curindex;
-  List<Audio> audios;
-  Favorites({required this.audios, this.curindex});
+class favoritesPage extends StatefulWidget {
+  favoritesPage({Key? key}) : super(key: key);
 
   @override
-  _FavoritesState createState() => _FavoritesState();
+  _favoritesPageState createState() => _favoritesPageState();
 }
 
-class _FavoritesState extends State<Favorites> {
-  // var playlistind = Hive.box('fovorites');
-
-  int? a;
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _favoritesPageState extends State<favoritesPage> {
+  List<Audio> audio = [];
   @override
   Widget build(BuildContext context) {
-    // widget.curindex == null
-    //     ? playlistind
-    //     :
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(
-          'Favorites',
-          style: TextStyle(
-            color: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('Favorites'),
+            backgroundColor: Colors.black,
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: GestureDetector(
-              onTap: () {
-                // playlistind.clear();
-              },
-              child: Text(
-                'Clear All',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [favlist()],
+            ),
+          )),
+    );
+  }
+
+  ValueListenableBuilder<Box<dynamic>> favlist() {
+    return ValueListenableBuilder(
+      valueListenable: Hive.box('fav').listenable(),
+      builder: (context, Box todos, _) {
+        audio = [];
+        List<dynamic> keys = todos.get('favsong');
+        for (var i = 0; i <= keys.length - 1; i++) {
+          Audio? newaudio = Audio.file(
+            keys[i]['uri'].toString(),
+            metas: Metas(
+              id: keys[i]['id'].toString(),
+              title: keys[i]['title'],
+              album: keys[i]['album'],
+              artist: keys[i]['artist'],
+              image: MetasImage.file(
+                keys[i]['uri'].toString(),
               ),
             ),
+          );
+
+          audio.add(newaudio);
+        }
+        return (ListView.separated(
+          physics: ScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          itemCount: keys.length,
+          shrinkWrap: true,
+          itemBuilder: (context, ind) {
+            return ListTile(
+              title: Text(
+                // 'ga',
+                keys[ind]['title'].toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              leading: QueryArtworkWidget(
+                nullArtworkWidget:
+                    Image.asset('assets/images/defaultImage.jpg'),
+                id: keys[ind]['id'],
+                type: ArtworkType.AUDIO,
+              ),
+              subtitle: Text(
+                keys[ind]['artist'],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+              onTap: () {
+                OpenPlayer().openPlayer(ind, audio);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayPage(audio: audio, index: ind),
+                  ),
+                );
+              },
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  keys.removeAt(ind);
+                  setState(() {});
+                  // todos.deleteAt(keys[ind]);
+                },
+              ),
+            );
+          },
+          separatorBuilder: (_, index) => Divider(
+            color: Colors.white,
           ),
-          // IconButton(
-          //     onPressed: () {
-          //       playlistind.clear();
-          //     },
-          //     icon: Icon(
-          //       Icons.delete,
-          //       color: Colors.white,
-          //     ))
-        ],
-      ),
-      // body: ValueListenableBuilder(
-      //   valueListenable: Hive.box('fovorites').listenable(),
-      //   builder: (context, Box todos, _) {
-      //     var keys = todos.keys.cast<int>().toList();
-      //     return ListView.separated(
-      //       itemCount: todos.length,
-      //       shrinkWrap: true,
-      //       itemBuilder: (context, index) {
-      //         final int key = keys[index];
-      //         final Favoritesmodel? todo = todos.get(key);
-      //         // a = b.get('title');
-      //         return todo == widget.curindex
-      //             ? Text(
-      //                 'Its Allready in that playlist',
-      //                 style: TextStyle(color: Colors.white),
-      //               )
-      //             : GestureDetector(
-      //                 onTap: () {},
-      //                 child: ListTile(
-      //                   title: todos.isEmpty
-      //                       ? Text(
-      //                           "No",
-      //                           style: TextStyle(color: Colors.white),
-      //                         )
-      //                       : Text(
-      //                           widget.audios[todo!.index].metas.title
-      //                               .toString(),
-      //                           style: TextStyle(color: Colors.white),
-      //                         ),
-      //                   trailing: IconButton(
-      //                     icon: Icon(
-      //                       Icons.delete,
-      //                       color: Colors.white,
-      //                     ),
-      //                     onPressed: () {
-      //                       todo!.delete();
-      //                     },
-      //                   ),
-      //                 ));
-      //       },
-      //       separatorBuilder: (_, index) => Divider(
-      //         color: Colors.white,
-      //       ),
-      //     );
-      //   },
-      // ),
+        ));
+      },
     );
   }
 }

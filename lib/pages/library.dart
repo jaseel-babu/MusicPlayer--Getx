@@ -101,16 +101,10 @@ class _LibraryState extends State<Library> {
           ),
           GestureDetector(
             onTap: () {
-              // playlistbox.clear();
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => Favorites(
-                    audios: widget.audios,
-                  ),
-                ),
+                MaterialPageRoute(builder: (context) => favoritesPage()),
               );
-              List<dynamic> dummylist = [];
             },
             child: ListTile(
               tileColor: Colors.white30,
@@ -239,44 +233,7 @@ class _LibraryState extends State<Library> {
                                   playlistname.keyAt(ind),
                                   style: TextStyle(color: Colors.white),
                                 ),
-                          trailing:
-                              //  PopupMenuButton(
-                              //     icon: Icon(
-                              //       Icons.more_vert_rounded,
-                              //       color: Colors.white,
-                              //     ),
-                              //     itemBuilder: (context) => [
-                              //           PopupMenuItem(
-                              //             child: Text("Edit"),
-                              //             value: 1,
-                              //           ),
-                              //           PopupMenuItem(
-                              //             child: Text("Delete"),
-                              //             value: 2,
-                              //             onTap: () {
-                              //               playlistname.deleteAt(ind);
-                              //             },
-                              //           )
-                              //         ])
-                              //  PopupMenuButton(
-                              //     icon: Icon(
-                              //       Icons.more_vert_rounded,
-                              //       color: Colors.white,
-                              //     ),
-                              //     itemBuilder: (context) => [
-                              //           PopupMenuItem(
-                              //             child: Text("Edit"),
-                              //             value: 1,
-                              //           ),
-                              //           PopupMenuItem(
-                              //             child: Text("Delete"),
-                              //             value: 2,
-                              //             onTap: () {
-                              //               playlistname.deleteAt(ind);
-                              //             },
-                              //           )
-                              //         ])
-                              IconButton(
+                          trailing: IconButton(
                             icon: Icon(
                               Icons.delete,
                               color: Colors.white,

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/duration.dart';
+import 'package:musicsample/functionalities/addsongplaylist.dart';
+import 'package:musicsample/functionalities/favoriteButton.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import '../controll.dart';
@@ -57,272 +59,6 @@ class _PlayPageState extends State<PlayPage> {
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                final TextEditingController namecontroller =
-                    TextEditingController();
-                String? title;
-                var playlistbox = Hive.box('playlist');
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      color: Colors.black,
-                      child: Center(
-                        child: Column(
-                          children: <Widget>[
-                            ListView(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              children: [
-                                ListTile(
-                                  title: GestureDetector(
-                                    child: Text(
-                                      '+ Add Playlist',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    onTap: () => showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        List<dynamic> dummylist = [];
-                                        return AlertDialog(
-                                          backgroundColor: Colors.black,
-                                          title: Text(
-                                            'Create New Playlist',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          actions: [
-                                            TextField(
-                                              controller: namecontroller,
-                                              decoration: InputDecoration(
-                                                filled: true,
-                                                fillColor: Colors.white,
-                                                border: OutlineInputBorder(),
-                                                hintText: 'Playlist Name',
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                if (namecontroller
-                                                    .text.isNotEmpty) {
-                                                  title = namecontroller.text;
-                                                  title!.isNotEmpty
-                                                      ? playlistbox.put(
-                                                          title,
-                                                          dummylist,
-                                                        )
-                                                      : playlistbox;
-                                                  setState(() {});
-                                                  Navigator.pop(context, 'OK');
-                                                  namecontroller.clear();
-                                                }
-                                              },
-                                              child: const Text(
-                                                'OK',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                // GestureDetector(
-                                //   onTap:
-                                //       () {
-                                //     playlistbox.clear();
-                                //     // Navigator.push(
-                                //     //   context,
-                                //     //   MaterialPageRoute(
-                                //     //     builder: (context) => Favorites(
-                                //     //       audios: widget.audios,
-                                //     //       title: 'Favorites',
-                                //     //     ),
-                                //     //   ),
-                                //     // );
-                                //     List<dynamic>
-                                //         dummylist =
-                                //         [];
-                                //   },
-                                //   child:
-                                //       ListTile(
-                                //     tileColor:
-                                //         Colors.white30,
-                                //     title:
-                                //         Text(
-                                //       'Favorites',
-                                //       style: TextStyle(color: Colors.white),
-                                //     ),
-                                //     trailing:
-                                //         Icon(Icons.favorite, color: Colors.white),
-                                //   ),
-                                // ),
-                                playlistbox == null
-                                    ? Text(
-                                        'No Data here now',
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    : SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: ValueListenableBuilder(
-                                          valueListenable:
-                                              Hive.box('playlist').listenable(),
-                                          builder: (context, Box playlist, _) {
-                                            Box databox = Hive.box('songbox');
-                                            var allsongsfromhive =
-                                                databox.get('allsongs');
-
-                                            List<dynamic> keys =
-                                                playlist.keys.toList();
-
-                                            return (ListView.separated(
-                                              physics: ScrollPhysics(),
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: keys.length,
-                                              shrinkWrap: true,
-                                              itemBuilder: (context, ind) {
-                                                List<dynamic> findsong =
-                                                    allsongsfromhive
-                                                        .where(
-                                                          (element) =>
-                                                              element['id']
-                                                                  .toString()
-                                                                  .contains(
-                                                                    widget
-                                                                        .audio[widget
-                                                                            .index]
-                                                                        .metas
-                                                                        .id
-                                                                        .toString(),
-                                                                  ),
-                                                        )
-                                                        .toList();
-                                                List<dynamic> playlists =
-                                                    playlistbox.get(keys[ind]);
-                                                return GestureDetector(
-                                                  onTap: () {},
-                                                  child: ListTile(
-                                                    leading: Icon(
-                                                      Icons.playlist_play,
-                                                      color: Colors.white,
-                                                    ),
-                                                    title: Text(
-                                                      playlist.keyAt(ind),
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                    trailing: TextButton(
-                                                      onPressed: () {
-                                                        setState(() {});
-                                                      },
-                                                      child: playlists
-                                                              .where((element) =>
-                                                                  element['id']
-                                                                      .toString() ==
-                                                                  widget
-                                                                      .audio[widget
-                                                                          .index]
-                                                                      .metas
-                                                                      .id
-                                                                      .toString())
-                                                              .isEmpty
-                                                          ? GestureDetector(
-                                                              onTap: () {
-                                                                // List<dynamic> playlists = playlistbox.get(keys[ind]);
-                                                                playlists.add(
-                                                                    findsong
-                                                                        .first);
-                                                                playlistbox.put(
-                                                                    keys[ind],
-                                                                    playlists);
-
-                                                                setState(() {});
-                                                                Navigator.pop(
-                                                                    context);
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  SnackBar(
-                                                                    content:
-                                                                        const Text(
-                                                                            'Song Added In Playlist'),
-                                                                    duration: const Duration(
-                                                                        seconds:
-                                                                            1),
-                                                                  ),
-                                                                );
-                                                              },
-                                                              child: Text(
-                                                                'Add to Playlist',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            )
-                                                          : GestureDetector(
-                                                              onTap: () {
-                                                                print(findsong
-                                                                    .first);
-                                                                playlists.removeWhere((element) =>
-                                                                    element['id']
-                                                                        .toString() ==
-                                                                    findsong
-                                                                        .first[
-                                                                            'id']
-                                                                        .toString());
-                                                                Navigator.pop(
-                                                                    context);
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  SnackBar(
-                                                                    content:
-                                                                        const Text(
-                                                                            'Song Removed From Playlist'),
-                                                                    duration: const Duration(
-                                                                        seconds:
-                                                                            1),
-                                                                  ),
-                                                                );
-                                                              },
-                                                              child: Text(
-                                                                'Remove From Playlist',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              separatorBuilder: (_, index) =>
-                                                  Divider(
-                                                color: Colors.white,
-                                              ),
-                                            ));
-                                          },
-                                        ),
-                                      )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              icon: Icon(
-                Icons.library_add,
-                color: Colors.white,
-              ),
-            ),
             SizedBox(
               width: 20,
             )
@@ -332,6 +68,9 @@ class _PlayPageState extends State<PlayPage> {
           builder: (context, Playing? playing) {
             myAudio = find(widget.audio, playing!.audio.assetAudioPath);
             var image = int.parse(myAudio!.metas.id!);
+            var favoritesbox = Hive.box('fav');
+            List<dynamic> favlists = favoritesbox.get('favsong');
+
             return myAudio == null
                 ? Center(
                     child: Text(
@@ -366,85 +105,35 @@ class _PlayPageState extends State<PlayPage> {
                                   height: 40,
                                 ),
                                 ListTile(
-                                  title: Text(
-                                    myAudio!.metas.title!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  subtitle: Text(
-                                    myAudio!.metas.artist!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  trailing: GestureDetector(
-                                    onTap: () {
-                                      setState(() {});
-                                      userTouch = false;
-                                    },
-                                    onDoubleTap: () {
-                                      setState(() {});
-                                      userTouch = true;
-                                    },
-                                    child: Icon(
-                                      userTouch
-                                          ? Icons.favorite_border
-                                          : Icons.favorite,
-                                      color: Colors.white,
+                                    title: Text(
+                                      myAudio!.metas.title!,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w500),
                                     ),
-                                  ),
-                                )
-                                // Row(
-                                //   mainAxisAlignment:
-                                //       MainAxisAlignment.spaceBetween,
-                                //   children: [
-                                //     Text(
-                                //       myAudio!.metas.title!,
-                                //       maxLines: 1,
-                                //       overflow: TextOverflow.ellipsis,
-                                //       style: TextStyle(
-                                //           color: Colors.white,
-                                //           fontSize: 28,
-                                //           fontWeight: FontWeight.w500),
-                                //     ),
-                                //     GestureDetector(
-                                //       onTap: () {
-                                //         setState(() {});
-                                //         userTouch = false;
-                                //       },
-                                //       onDoubleTap: () {
-                                //         setState(() {});
-                                //         userTouch = true;
-                                //       },
-                                //       child: Icon(
-                                //         userTouch
-                                //             ? Icons.favorite_border
-                                //             : Icons.favorite,
-                                //         color: Colors.white,
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
-                                // Row(
-                                //   children: [
-                                //     Text(
-                                //       myAudio!.metas.artist!,
-                                //       // maxLines: 1,
-                                //       // overflow: TextOverflow.ellipsis,
-                                //       style: TextStyle(
-                                //           color: Colors.white,
-                                //           fontSize: 13,
-                                //           fontWeight: FontWeight.w500),
-                                //     ),
-                                //   ],
-                                // ),
+                                    subtitle: Text(
+                                      myAudio!.metas.artist!,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        FavoriteButton(
+                                          myAudio: myAudio!,
+                                        ),
+                                        AddSongToPlaylist(
+                                          audio: myAudio!,
+                                        ),
+                                      ],
+                                    ))
                               ],
                             ),
                           ),
@@ -487,7 +176,6 @@ class _PlayPageState extends State<PlayPage> {
                                           bool nextDone = true;
                                           bool prevDone = true;
                                           return PlayingControls(
-                                            // loopMode: loopMode,
                                             isPlaying: isPlaying,
                                             isPlaylist: true,
                                             onPlay: () async {
@@ -509,9 +197,6 @@ class _PlayPageState extends State<PlayPage> {
                                                 prevDone = true;
                                               }
                                             },
-                                            // onRepeat: () {
-                                            //   assetsAudioPlayer.loopMode;
-                                            // },
                                           );
                                         },
                                       )
