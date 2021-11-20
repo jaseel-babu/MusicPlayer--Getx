@@ -2,13 +2,11 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:musicsample/database/playlistmodel.dart';
 import 'package:musicsample/pages/favoritePage.dart';
 import 'package:musicsample/pages/playlistpage.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 class Library extends StatefulWidget {
-  List<Audio> audios;
+  final List<Audio> audios;
   Library({Key? key, required this.audios}) : super(key: key);
 
   @override
@@ -35,7 +33,7 @@ class _LibraryState extends State<Library> {
           ListTile(
             title: GestureDetector(
               child: Text(
-                '+ Add Playlist',
+                '+ Create New Playlist',
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () => showDialog<String>(
@@ -116,9 +114,11 @@ class _LibraryState extends State<Library> {
             ),
           ),
           playlistbox == null
-              ? Text(
-                  'No Data here now',
-                  style: TextStyle(color: Colors.white),
+              ? Center(
+                  child: Text(
+                    'Create New Playlist',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 )
               : ValueListenableBuilder(
                   valueListenable: Hive.box('playlist').listenable(),

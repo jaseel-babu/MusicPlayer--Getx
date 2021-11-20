@@ -3,27 +3,23 @@ import 'package:flutter/material.dart';
 
 class PlayingControls extends StatelessWidget {
   final bool isPlaying;
-  final LoopMode? loopMode;
   final bool isPlaylist;
   final Function()? onPrevious;
   final Function() onPlay;
   final Function()? onNext;
-  final Function()? onRepeat;
 
-  PlayingControls(
-      {required this.isPlaying,
-      this.isPlaylist = false,
-      this.loopMode,
-      this.onPrevious,
-      required this.onPlay,
-      this.onNext,
-      this.onRepeat});
+  PlayingControls({
+    required this.isPlaying,
+    this.isPlaylist = false,
+    this.onPrevious,
+    required this.onPlay,
+    this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      // mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           onPressed: isPlaylist ? onPrevious : null,
@@ -42,19 +38,11 @@ class PlayingControls extends StatelessWidget {
           ),
         ),
         IconButton(
-          onPressed: onNext,
+          onPressed: isPlaylist ? onNext : null,
           icon: Icon(Icons.skip_next),
           color: Colors.white,
           iconSize: 32,
         ),
-        // IconButton(
-        //   onPressed: onRepeat,
-        //   icon: Icon(
-        //     Icons.repeat,
-        //     color: Colors.white,
-        //     size: 32,
-        //   ),
-        // )
       ],
     );
   }

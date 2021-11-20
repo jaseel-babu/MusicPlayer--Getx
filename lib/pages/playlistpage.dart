@@ -28,35 +28,43 @@ class _playlistpageState extends State<playlistpage> {
   Widget build(BuildContext context) {
     a = playlistbox.get(widget.title);
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(
-            widget.title,
+      child: Container(
+        decoration: new BoxDecoration(
+            image: new DecorationImage(
+          image: new AssetImage('assets/images/fYV9z3.webp'),
+          fit: BoxFit.cover,
+        )),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            title: Text(
+              widget.title,
+            ),
           ),
-        ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    Box databox = Hive.box('songbox');
-                    List<dynamic> allsongsfromhive = databox.get('allsongs');
-                    print(allsongsfromhive[0]['id']);
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (context) {
-                        return bottam(name: widget.title);
-                      },
-                    );
-                  },
-                  child: Text(
-                    '+ Add Song Into This PlayList',
-                    style: TextStyle(color: Colors.white),
-                  )),
-              playlistList()
-            ],
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      Box databox = Hive.box('songbox');
+                      List<dynamic> allsongsfromhive = databox.get('allsongs');
+                      print(allsongsfromhive[0]['id']);
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (context) {
+                          return bottam(name: widget.title);
+                        },
+                      );
+                    },
+                    child: Text(
+                      '+ Add Song Into This PlayList',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                playlistList()
+              ],
+            ),
           ),
         ),
       ),

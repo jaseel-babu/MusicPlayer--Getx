@@ -8,7 +8,9 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'homepage.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+const String userOnOfNotification = 'isUserChoice';
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DataModelAdapter());
@@ -35,8 +37,8 @@ Future<void> main() async {
       debugShowCheckedModeBanner: false,
       home: MyApp(),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
-      ),
+          // scaffoldBackgroundColor: Colors.black,
+          ),
     ),
   );
 }
@@ -49,25 +51,16 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
   final assetsAudioPlayer = AssetsAudioPlayer.withId('music');
 
   @override
   void initState() {
     super.initState();
-    // requestpermission();
   }
 
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
   }
-
-  // Future<void> requestpermission() async {
-  //   bool permissionStatus = await _audioQuery.permissionsStatus();
-  //   if (!permissionStatus) {
-  //     await _audioQuery.permissionsRequest();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

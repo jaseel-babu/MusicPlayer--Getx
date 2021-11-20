@@ -18,16 +18,25 @@ class _favoritesPageState extends State<favoritesPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text('Favorites'),
-            backgroundColor: Colors.black,
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [favlist()],
+      child: Container(
+        decoration: new BoxDecoration(
+            image: new DecorationImage(
+          image: new AssetImage('assets/images/fYV9z3.webp'),
+          fit: BoxFit.cover,
+        )),
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              elevation: 0,
+              title: Text('Favorites'),
+              backgroundColor: Colors.transparent,
             ),
-          )),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [favlist()],
+              ),
+            )),
+      ),
     );
   }
 
@@ -96,7 +105,6 @@ class _favoritesPageState extends State<favoritesPage> {
                 onPressed: () {
                   keys.removeAt(ind);
                   setState(() {});
-                  // todos.deleteAt(keys[ind]);
                 },
               ),
             );

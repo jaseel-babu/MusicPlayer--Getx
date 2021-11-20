@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/duration.dart';
 import 'package:musicsample/functionalities/addsongplaylist.dart';
 import 'package:musicsample/functionalities/favoriteButton.dart';
+import 'package:musicsample/functionalities/favoriteButton.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import '../controll.dart';
@@ -41,62 +42,67 @@ class _PlayPageState extends State<PlayPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          toolbarHeight: 100,
-          title: Text(
-            "Now Playing",
-            style: TextStyle(color: Colors.white),
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: Colors.white,
+      child: Container(
+        decoration: new BoxDecoration(
+            image: new DecorationImage(
+          colorFilter: new ColorFilter.mode(
+              Colors.black.withOpacity(0.2), BlendMode.dstATop),
+          image: new AssetImage(
+              'assets/images/7d8fe1bd2a0073864b4c10b4f483d48a.jpg'),
+          fit: BoxFit.cover,
+        )),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            toolbarHeight: 100,
+            title: Text(
+              "Now Playing",
+              style: TextStyle(color: Colors.white),
             ),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              SizedBox(
+                width: 20,
+              )
+            ],
           ),
-          actions: [
-            SizedBox(
-              width: 20,
-            )
-          ],
-        ),
-        body: assetsAudioPlayer.builderCurrent(
-          builder: (context, Playing? playing) {
-            myAudio = find(widget.audio, playing!.audio.assetAudioPath);
-            var image = int.parse(myAudio!.metas.id!);
-            var favoritesbox = Hive.box('fav');
-            List<dynamic> favlists = favoritesbox.get('favsong');
+          body: assetsAudioPlayer.builderCurrent(
+            builder: (context, Playing? playing) {
+              myAudio = find(widget.audio, playing!.audio.assetAudioPath);
+              var image = int.parse(myAudio!.metas.id!);
+              var over = widget.audio.length;
 
-            return myAudio == null
-                ? Center(
-                    child: Text(
-                      'Please Select Song',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                : SingleChildScrollView(
-                    child: Padding(
+              return myAudio == null
+                  ? Center(
+                      child: Text(
+                        'Please Select Song',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : Padding(
                       padding: const EdgeInsets.only(bottom: 48.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                SizedBox(
-                                  height: 40,
-                                ),
                                 Container(
-                                  width: 250,
-                                  height: 200,
+                                  width: 300,
+                                  height: 300,
                                   child: QueryArtworkWidget(
                                     nullArtworkWidget: Image.asset(
-                                        'assets/images/defaultImage.jpg'),
+                                        'assets/images/Neon Apple Music Logo.png'),
                                     id: image,
                                     type: ArtworkType.AUDIO,
                                   ),
@@ -154,7 +160,11 @@ class _PlayPageState extends State<PlayPage> {
                                   return Column(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.all(25.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 25.0,
+                                            right: 25.0,
+                                            top: 20.0,
+                                            bottom: 20.0),
                                         child: ProgressBar(
                                           thumbRadius: 0.0,
                                           thumbColor: Colors.white,
@@ -208,9 +218,9 @@ class _PlayPageState extends State<PlayPage> {
                           ),
                         ],
                       ),
-                    ),
-                  );
-          },
+                    );
+            },
+          ),
         ),
       ),
     );

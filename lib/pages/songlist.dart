@@ -5,7 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/functionalities/popupmenu.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'favoritePage.dart';
 import 'playpage.dart';
 
 class Songlist extends StatefulWidget {
@@ -40,15 +39,8 @@ class _SonglistState extends State<Songlist> {
   var ind = 0;
   @override
   Widget build(BuildContext context) {
-    var playlistbox = Hive.box('playlist');
-    Box databox = Hive.box('songbox');
-    var allsongsfromhive = databox.get('allsongs');
-    final TextEditingController namecontroller = TextEditingController();
-    String? title;
-    var favoritesbox = Hive.box('fav');
-    List<dynamic> favlists = favoritesbox.get('favsong');
     return widget.audios.isEmpty
-        ? CircularProgressIndicator()
+        ? Center(child: CircularProgressIndicator())
         : Column(
             children: [
               Expanded(
@@ -83,48 +75,60 @@ class _SonglistState extends State<Songlist> {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white30),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: 150,
-                                    height: 120,
-                                    child: QueryArtworkWidget(
-                                      nullArtworkWidget: Image.asset(
-                                          'assets/images/defaultImage.jpg'),
-                                      id: image,
-                                      type: ArtworkType.AUDIO,
+                                // border: Border.all(color: Colors.white30),
+                                ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  height: 140,
+                                  child: QueryArtworkWidget(
+                                    artworkBorder: BorderRadius.circular(40),
+                                    nullArtworkWidget: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(40),
+                                      ),
+                                      width: 150,
+                                      height: 140,
+                                      child: Container(
+                                        width: 150,
+                                        height: 140,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(40),
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/Neon Apple Music Logo.png'),
+                                                fit: BoxFit.cover)),
+                                      ),
                                     ),
+                                    id: image,
+                                    type: ArtworkType.AUDIO,
                                   ),
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Text(
-                                            widget.audios[index].metas.title!,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
+                                ),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          widget.audios[index].metas.title!,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
                                               color: Colors.white,
-                                            ),
-                                          ),
+                                              fontSize: 18.0),
                                         ),
-                                        Popupmenu(
-                                            audios: widget.audios, index: index)
-                                      ],
-                                    ),
+                                      ),
+                                      Popupmenu(
+                                          audios: widget.audios, index: index)
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -198,6 +202,21 @@ class _SonglistState extends State<Songlist> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: PlayerBuilder.isPlaying(
+                        player: assetsAudioPlayer,
+                        builder: (context, isPlaying) {
+                          return IconButton(
+                            onPressed: () async {
+                              await assetsAudioPlayer.playOrPause();
+                            },
+                            icon: Icon(
+                              isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

@@ -34,7 +34,7 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                         ListTile(
                           title: GestureDetector(
                             child: Text(
-                              '+ Add Playlist',
+                              '+Create New Playlist',
                               style: TextStyle(color: Colors.white),
                             ),
                             onTap: () => showDialog<String>(

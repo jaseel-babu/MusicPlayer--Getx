@@ -1,12 +1,11 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class SearchPage extends StatefulWidget {
-  List<Audio> audios;
+  final List<Audio> audios;
 
   SearchPage({
     Key? key,
@@ -38,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(20.0),
           child: TextField(
             onChanged: (value) {
               Future.delayed(Duration(seconds: 2), () {
