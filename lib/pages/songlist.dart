@@ -1,14 +1,12 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/functionalities/popupmenu.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'playpage.dart';
 
 class Songlist extends StatefulWidget {
-  List<Audio> audios;
+  final List<Audio> audios;
 
   Songlist({
     Key? key,
@@ -47,93 +45,99 @@ class _SonglistState extends State<Songlist> {
                 flex: 4,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  child: GridView.builder(
-                    physics: BouncingScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
-                    itemCount: widget.audios.length,
-                    itemBuilder: (context, index) {
-                      ind = index;
-                      var image =
-                          int.parse(widget.audios[index].metas.id.toString());
-                      return GestureDetector(
-                        onTap: () {
-                          OpenPlayer().openPlayer(index, widget.audios);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlayPage(
-                                audio: widget.audios,
-                                index: index,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                // border: Border.all(color: Colors.white30),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: GridView.builder(
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
+                      itemCount: widget.audios.length,
+                      itemBuilder: (context, index) {
+                        ind = index;
+                        var image =
+                            int.parse(widget.audios[index].metas.id.toString());
+                        return GestureDetector(
+                          onTap: () {
+                            OpenPlayer().openPlayer(index, widget.audios);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlayPage(
+                                  audio: widget.audios,
+                                  index: index,
                                 ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Container(
-                                  width: 150,
-                                  height: 140,
-                                  child: QueryArtworkWidget(
-                                    artworkBorder: BorderRadius.circular(40),
-                                    nullArtworkWidget: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(40),
-                                      ),
-                                      width: 150,
-                                      height: 140,
-                                      child: Container(
-                                        width: 150,
-                                        height: 140,
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  // border: Border.all(color: Colors.white30),
+                                  ),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    width: 150,
+                                    height: 140,
+                                    child: QueryArtworkWidget(
+                                      artworkBorder: BorderRadius.circular(40),
+                                      nullArtworkWidget: Container(
                                         decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(40),
+                                        ),
+                                        width: 120,
+                                        height: 110,
+                                        child: Container(
+                                          width: 120,
+                                          height: 110,
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(40),
                                             image: DecorationImage(
                                                 image: AssetImage(
                                                     'assets/images/Neon Apple Music Logo.png'),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                    ),
-                                    id: image,
-                                    type: ArtworkType.AUDIO,
-                                  ),
-                                ),
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          widget.audios[index].metas.title!,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18.0),
+                                                fit: BoxFit.cover),
+                                          ),
                                         ),
                                       ),
-                                      Popupmenu(
-                                          audios: widget.audios, index: index)
-                                    ],
+                                      id: image,
+                                      type: ArtworkType.AUDIO,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                              widget.audios[index].metas.title!,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3),
+                                        ),
+                                        Popupmenu(
+                                            audios: widget.audios, index: index)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -180,29 +184,23 @@ class _SonglistState extends State<Songlist> {
                     alignment: Alignment.topCenter,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.pink[900],
+                      color: Colors.transparent,
                     ),
                     child: ListTile(
                       leading: QueryArtworkWidget(
-                        nullArtworkWidget:
-                            Image.asset('assets/images/defaultImage.jpg'),
+                        nullArtworkWidget: Image.asset(
+                            'assets/images/Neon Apple Music Logo.png'),
                         id: image,
                         type: ArtworkType.AUDIO,
                       ),
-                      title: Text(
-                        myAudio!.metas.title!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                      subtitle: Text(
-                        myAudio!.metas.artist!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
+                      title: Text(myAudio!.metas.title!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText1),
+                      subtitle: Text(myAudio!.metas.artist!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText2),
                       trailing: PlayerBuilder.isPlaying(
                         player: assetsAudioPlayer,
                         builder: (context, isPlaying) {

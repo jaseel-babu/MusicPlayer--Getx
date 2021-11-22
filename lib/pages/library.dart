@@ -106,19 +106,14 @@ class _LibraryState extends State<Library> {
             },
             child: ListTile(
               tileColor: Colors.white30,
-              title: Text(
-                'Favorites',
-                style: TextStyle(color: Colors.white),
-              ),
+              title: Text('Favorites',
+                  style: Theme.of(context).textTheme.bodyText1),
               trailing: Icon(Icons.favorite, color: Colors.white),
             ),
           ),
-          playlistbox == null
+          playlistbox.isEmpty
               ? Center(
-                  child: Text(
-                    'Create New Playlist',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: SizedBox(),
                 )
               : ValueListenableBuilder(
                   valueListenable: Hive.box('playlist').listenable(),
@@ -130,9 +125,6 @@ class _LibraryState extends State<Library> {
                       itemCount: playlistname.keys.length,
                       shrinkWrap: true,
                       itemBuilder: (context, ind) {
-                        //final int key = keys[index];
-                        var get = playlistname.get(title.toString());
-                        // a = b.get('title');
                         return ListTile(
                           onTap: () {
                             Navigator.push(
@@ -149,7 +141,6 @@ class _LibraryState extends State<Library> {
                             showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  List<dynamic> dummylist = [];
                                   return AlertDialog(
                                     backgroundColor: Colors.black,
                                     title: Text(

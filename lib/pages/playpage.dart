@@ -1,18 +1,15 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/duration.dart';
 import 'package:musicsample/functionalities/addsongplaylist.dart';
-import 'package:musicsample/functionalities/favoriteButton.dart';
 import 'package:musicsample/functionalities/favoriteButton.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import '../controll.dart';
 
 class PlayPage extends StatefulWidget {
-  int index;
-  List<Audio> audio;
+  final int index;
+  final List<Audio> audio;
 
   PlayPage({required this.audio, required this.index});
 
@@ -58,7 +55,7 @@ class _PlayPageState extends State<PlayPage> {
             toolbarHeight: 100,
             title: Text(
               "Now Playing",
-              style: TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.headline1,
             ),
             leading: IconButton(
               onPressed: () {
@@ -79,8 +76,6 @@ class _PlayPageState extends State<PlayPage> {
             builder: (context, Playing? playing) {
               myAudio = find(widget.audio, playing!.audio.assetAudioPath);
               var image = int.parse(myAudio!.metas.id!);
-              var over = widget.audio.length;
-
               return myAudio == null
                   ? Center(
                       child: Text(
@@ -91,7 +86,6 @@ class _PlayPageState extends State<PlayPage> {
                   : Padding(
                       padding: const EdgeInsets.only(bottom: 48.0),
                       child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -111,24 +105,18 @@ class _PlayPageState extends State<PlayPage> {
                                   height: 40,
                                 ),
                                 ListTile(
-                                    title: Text(
-                                      myAudio!.metas.title!,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    subtitle: Text(
-                                      myAudio!.metas.artist!,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),
-                                    ),
+                                    title: Text(myAudio!.metas.title!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2),
+                                    subtitle: Text(myAudio!.metas.artist!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -168,7 +156,7 @@ class _PlayPageState extends State<PlayPage> {
                                         child: ProgressBar(
                                           thumbRadius: 0.0,
                                           thumbColor: Colors.white,
-                                          progressBarColor: Colors.pink[900],
+                                          progressBarColor: Colors.white,
                                           progress: currentinfo.currentPosition,
                                           total: currentinfo.duration,
                                           onSeek: (to) {
@@ -176,10 +164,10 @@ class _PlayPageState extends State<PlayPage> {
                                           },
                                         ),
                                       ),
-                                      PositionSeekWidget(
-                                          currentPosition:
-                                              currentinfo.currentPosition,
-                                          duration: currentinfo.duration),
+                                      // PositionSeekWidget(
+                                      //     currentPosition:
+                                      //         currentinfo.currentPosition,
+                                      //     duration: currentinfo.duration),
                                       PlayerBuilder.isPlaying(
                                         player: assetsAudioPlayer,
                                         builder: (context, isPlaying) {

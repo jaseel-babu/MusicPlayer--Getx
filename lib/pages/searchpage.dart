@@ -62,37 +62,30 @@ class _SearchPageState extends State<SearchPage> {
                     print(result);
                     return GestureDetector(
                       onTap: () {
-                        OpenPlayer().openPlayer(index, widget.audios);
+                        OpenPlayer().openPlayer(index, result);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                PlayPage(audio: widget.audios, index: index),
+                                PlayPage(audio: result, index: index),
                           ),
                         );
                       },
                       child: ListTile(
                         leading: QueryArtworkWidget(
-                          nullArtworkWidget:
-                              Image.asset('assets/images/defaultImage.jpg'),
+                          nullArtworkWidget: Image.asset(
+                              'assets/images/Neon Apple Music Logo.png'),
                           id: int.parse(result[index].metas.id.toString()),
                           type: ArtworkType.AUDIO,
                         ),
-                        title: Text(
-                          result[index].metas.title.toString(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        subtitle: Text(
-                          result[index].metas.artist.toString(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        title: Text(result[index].metas.title.toString(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyText1),
+                        subtitle: Text(result[index].metas.artist.toString(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyText2),
                         trailing: Icon(
                           Icons.play_arrow,
                           color: Colors.white,

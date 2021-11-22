@@ -12,6 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool onOff = true;
+  bool theme = true;
 
   @override
   void initState() {
@@ -21,7 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   getSwitchStatus() async {
     onOff = await getChoice();
-
+    theme = await gettheme();
     setState(() {});
   }
 
@@ -29,7 +30,19 @@ class _SettingsPageState extends State<SettingsPage> {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     sharedPreferences.setBool(userOnOfNotification, value);
-    // return sharedPreferences.setBool(userOnOfNotification, value);
+  }
+
+  settheme(bool value) async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    sharedPreferences.setBool('theme', value);
+  }
+
+  gettheme() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    bool? theme = sharedPreferences.getBool('theme');
+    return theme != null ? theme : true;
   }
 
   getChoice() async {
@@ -58,7 +71,10 @@ class _SettingsPageState extends State<SettingsPage> {
             icon: Icon(Icons.arrow_drop_down_outlined),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text('Settings'),
+          title: Text(
+            'Settings',
+            style: Theme.of(context).textTheme.headline1,
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,10 +84,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: ListView(
                   children: [
                     ListTile(
-                      leading: Text(
-                        'Notification',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                      leading: Text('Notification',
+                          style: Theme.of(context).textTheme.bodyText1),
                       trailing: Switch(
                         value: onOff,
                         onChanged: (value) {
@@ -79,6 +93,31 @@ class _SettingsPageState extends State<SettingsPage> {
                             () {
                               onOff = value;
                               setchoice(value);
+                              print(value);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                      'Notification will be On/Off in Next Restart'),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        inactiveTrackColor: Colors.white,
+                        activeTrackColor: Colors.white,
+                      ),
+                    ),
+                    ListTile(
+                      leading: Text('Theme',
+                          style: Theme.of(context).textTheme.bodyText1),
+                      trailing: Switch(
+                        value: theme,
+                        onChanged: (value) {
+                          setState(
+                            () {
+                              theme = value;
+                              settheme(value);
                               print(value);
                             },
                           );
@@ -88,17 +127,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     ListTile(
-                      leading: Text(
-                        'Privacy and Policy',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                      leading: Text('Privacy and Policy',
+                          style: Theme.of(context).textTheme.bodyText1),
                     ),
                     ListTile(
-                      leading: Text(
-                        'Terms And Conditions',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ),
+                        leading: Text('Terms And Conditions',
+                            style: Theme.of(context).textTheme.bodyText1)),
                     ListTile(
                       onTap: () => showAboutDialog(
                           applicationIcon: Image.asset(
@@ -109,10 +143,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           context: context,
                           applicationName: 'Music app',
                           applicationVersion: '1.0.0'),
-                      leading: Text(
-                        'About',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                      leading: Text('About',
+                          style: Theme.of(context).textTheme.bodyText1),
                     ),
                   ],
                 ),

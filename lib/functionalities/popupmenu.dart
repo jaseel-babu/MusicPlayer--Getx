@@ -4,8 +4,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Popupmenu extends StatefulWidget {
-  List<Audio> audios;
-  int index;
+  final List<Audio> audios;
+  final int index;
   Popupmenu({Key? key, required this.audios, required this.index})
       : super(key: key);
 
@@ -28,7 +28,7 @@ class _PopupmenuState extends State<Popupmenu> {
     return PopupMenuButton(
       child: Icon(
         Icons.more_vert,
-        color: Colors.white,
+        color: Colors.white70,
       ),
       itemBuilder: (context) {
         return <PopupMenuItem<String>>[

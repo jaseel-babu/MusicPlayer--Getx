@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:musicsample/pages/settings.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/library.dart';
@@ -9,7 +7,7 @@ import 'pages/searchpage.dart';
 import 'pages/songlist.dart';
 
 class HomePage extends StatefulWidget {
-  List<Audio> audio;
+  final List<Audio> audio;
   HomePage({Key? key, required this.audio}) : super(key: key);
 
   @override
@@ -17,13 +15,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
   int _selectedIndex = 0;
-
+  bool? theme;
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   @override
   void initState() {
     super.initState();
+  }
+
+  gettheme() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    theme = await sharedPreferences.getBool('theme');
   }
 
   void onItemTapped(int index) {
@@ -34,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     List<Widget> _widgetOption = [
       Songlist(
         audios: widget.audio,
@@ -45,18 +49,23 @@ class _HomePageState extends State<HomePage> {
         audios: widget.audio,
       )
     ];
-
+    gettheme();
     return SafeArea(
       child: Container(
         decoration: new BoxDecoration(
             image: new DecorationImage(
-          image: new AssetImage('assets/images/fYV9z3.webp'),
+          image: theme == true || theme == null
+              ? AssetImage('assets/images/fYV9z3.webp')
+              : AssetImage('assets/images/white.jpg'),
           fit: BoxFit.cover,
         )),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Music Player'),
+            title: Text(
+              'Music Player',
+              style: Theme.of(context).textTheme.headline1,
+            ),
             backgroundColor: Colors.transparent,
             actions: [
               IconButton(

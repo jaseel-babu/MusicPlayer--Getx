@@ -28,7 +28,10 @@ class _favoritesPageState extends State<favoritesPage> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               elevation: 0,
-              title: Text('Favorites'),
+              title: Text(
+                'Favorites',
+                style: Theme.of(context).textTheme.headline1,
+              ),
               backgroundColor: Colors.transparent,
             ),
             body: SingleChildScrollView(
@@ -68,44 +71,46 @@ class _favoritesPageState extends State<favoritesPage> {
           itemCount: keys.length,
           shrinkWrap: true,
           itemBuilder: (context, ind) {
-            return ListTile(
-              title: Text(
-                // 'ga',
-                keys[ind]['title'].toString(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              leading: QueryArtworkWidget(
-                nullArtworkWidget:
-                    Image.asset('assets/images/defaultImage.jpg'),
-                id: keys[ind]['id'],
-                type: ArtworkType.AUDIO,
-              ),
-              subtitle: Text(
-                keys[ind]['artist'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, fontSize: 15),
-              ),
-              onTap: () {
-                OpenPlayer().openPlayer(ind, audio);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlayPage(audio: audio, index: ind),
-                  ),
-                );
-              },
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.white,
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  keys[ind]['title'].toString(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
-                onPressed: () {
-                  keys.removeAt(ind);
-                  setState(() {});
+                leading: QueryArtworkWidget(
+                  nullArtworkWidget:
+                      Image.asset('assets/images/Neon Apple Music Logo.png'),
+                  id: keys[ind]['id'],
+                  type: ArtworkType.AUDIO,
+                ),
+                subtitle: Text(
+                  keys[ind]['artist'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                onTap: () {
+                  OpenPlayer().openPlayer(ind, audio);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayPage(audio: audio, index: ind),
+                    ),
+                  );
                 },
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    keys.removeAt(ind);
+                    setState(() {});
+                  },
+                ),
               ),
             );
           },

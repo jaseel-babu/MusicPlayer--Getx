@@ -2,14 +2,13 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:musicsample/database/playlistmodel.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class playlistpage extends StatefulWidget {
-  List<dynamic> audios;
-  String title;
+  final List<dynamic> audios;
+  final String title;
   playlistpage({Key? key, required this.title, required this.audios})
       : super(key: key);
 
@@ -40,6 +39,7 @@ class _playlistpageState extends State<playlistpage> {
             backgroundColor: Colors.transparent,
             title: Text(
               widget.title,
+              style: Theme.of(context).textTheme.headline1,
             ),
           ),
           body: SingleChildScrollView(
@@ -100,24 +100,20 @@ class _playlistpageState extends State<playlistpage> {
           shrinkWrap: true,
           itemBuilder: (context, ind) {
             return ListTile(
-              title: Text(
-                keys[ind]['title'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
+              title: Text(keys[ind]['title'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText1),
               leading: QueryArtworkWidget(
                 nullArtworkWidget:
-                    Image.asset('assets/images/defaultImage.jpg'),
+                    Image.asset('assets/images/Neon Apple Music Logo.png'),
                 id: keys[ind]['id'],
                 type: ArtworkType.AUDIO,
               ),
-              subtitle: Text(
-                keys[ind]['artist'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, fontSize: 15),
-              ),
+              subtitle: Text(keys[ind]['artist'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText2),
               onTap: () {
                 OpenPlayer().openPlayer(ind, audio);
                 Navigator.push(
@@ -135,7 +131,6 @@ class _playlistpageState extends State<playlistpage> {
                 onPressed: () {
                   keys.removeAt(ind);
                   setState(() {});
-                  // todos.deleteAt(keys[ind]);
                 },
               ),
             );
@@ -172,7 +167,8 @@ class _bottamState extends State<bottam> {
       itemBuilder: (context, index) {
         return ListTile(
           leading: QueryArtworkWidget(
-            nullArtworkWidget: FlutterLogo(),
+            nullArtworkWidget:
+                Image.asset('assets/images/Neon Apple Music Logo.png'),
             id: allsongsfromhive[index]['id'],
             type: ArtworkType.AUDIO,
           ),

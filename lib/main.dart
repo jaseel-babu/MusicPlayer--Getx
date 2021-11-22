@@ -6,18 +6,16 @@ import 'package:musicsample/database/favorites.dart';
 import 'package:musicsample/database/playlistmodel.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String userOnOfNotification = 'isUserChoice';
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DataModelAdapter());
   Hive.registerAdapter(PlaylistModelmyAdapter());
-  // Hive.registerAdapter(playlistindexAdapter());
   Hive.registerAdapter(FavoritesmodelAdapter());
-  // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
   await Hive.openBox('songbox');
   await Hive.openBox('fav');
@@ -32,13 +30,75 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  bool? theme;
+
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+  theme = await sharedPreferences.getBool('theme');
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyApp(),
-      theme: ThemeData(
-          // scaffoldBackgroundColor: Colors.black,
-          ),
+      theme: theme == true || theme == null
+          ? ThemeData(
+              textTheme: TextTheme(
+                headline1: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Georgia'),
+                headline2: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                headline3: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                bodyText1: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                bodyText2: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w200,
+                    fontFamily: 'Georgia'),
+              ),
+            )
+          : ThemeData(
+              textTheme: TextTheme(
+                headline1: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Georgia'),
+                headline2: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                headline3: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                bodyText1: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Roboto'),
+                bodyText2: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w200,
+                    fontFamily: 'Georgia'),
+              ),
+            ),
     ),
   );
 }

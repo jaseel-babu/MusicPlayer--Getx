@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class FavoriteButton extends StatefulWidget {
-  Audio myAudio;
+  final Audio myAudio;
   FavoriteButton({Key? key, required this.myAudio}) : super(key: key);
 
   @override

@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AddSongToPlaylist extends StatefulWidget {
-  Audio audio;
+  final Audio audio;
   AddSongToPlaylist({Key? key, required this.audio}) : super(key: key);
 
   @override
@@ -137,7 +137,6 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                                 .isEmpty
                                             ? GestureDetector(
                                                 onTap: () {
-                                                  // List<dynamic> playlists = playlistbox.get(keys[ind]);
                                                   playlists.add(findsong.first);
                                                   playlistbox.put(
                                                       keys[ind], playlists);
