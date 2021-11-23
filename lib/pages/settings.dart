@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool onOff = true;
-  bool theme = true;
+  String? theme;
 
   @override
   void initState() {
@@ -32,17 +32,15 @@ class _SettingsPageState extends State<SettingsPage> {
     sharedPreferences.setBool(userOnOfNotification, value);
   }
 
-  settheme(bool value) async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    sharedPreferences.setBool('theme', value);
+  settheme(String value) async {
+    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setString('theme', value);
   }
 
   gettheme() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    bool? theme = sharedPreferences.getBool('theme');
-    return theme != null ? theme : true;
+    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    String? theme = await sharedPref.getString('theme');
+    return theme;
   }
 
   getChoice() async {
@@ -52,14 +50,32 @@ class _SettingsPageState extends State<SettingsPage> {
     return onOff != null ? onOff : true;
   }
 
+  String? them;
+  String? backimgpath;
+  getstheme() async {
+    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    them = await sharedPref.getString('theme');
+  }
+
   final assetsAudioPlayer = AssetsAudioPlayer();
   bool isSwitched = true;
   @override
   Widget build(BuildContext context) {
+    if (theme == null ||
+        theme == 'Background Image 1' ||
+        theme == 'Change Background Image') {
+      backimgpath = 'assets/images/fYV9z3.webp';
+    } else if (theme == 'Background Image 2') {
+      backimgpath = 'assets/images/darkper.jpg';
+    } else if (theme == 'Background Image 3') {
+      backimgpath = 'assets/images/_.jpeg';
+    }
+
+    String dropdownValue = 'Change Background Image';
     return Container(
       decoration: new BoxDecoration(
           image: new DecorationImage(
-        image: new AssetImage('assets/images/fYV9z3.webp'),
+        image: new AssetImage(backimgpath!),
         fit: BoxFit.cover,
       )),
       child: Scaffold(
@@ -108,22 +124,43 @@ class _SettingsPageState extends State<SettingsPage> {
                         activeTrackColor: Colors.white,
                       ),
                     ),
-                    ListTile(
-                      leading: Text('Theme',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      trailing: Switch(
-                        value: theme,
-                        onChanged: (value) {
-                          setState(
-                            () {
-                              theme = value;
-                              settheme(value);
-                              print(value);
-                            },
-                          );
-                        },
-                        inactiveTrackColor: Colors.white,
-                        activeTrackColor: Colors.white,
+                    Container(
+                      padding: EdgeInsets.only(left: 15, right: 50),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          dropdownColor: Colors.black,
+                          value: dropdownValue,
+                          icon: const Icon(
+                            Icons.wallpaper,
+                            color: Colors.white,
+                          ),
+                          style: const TextStyle(color: Colors.deepPurple),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownValue = newValue!;
+                              settheme(newValue);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                      'It will be Changed in Next Restart'),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            });
+                          },
+                          items: <String>[
+                            'Change Background Image',
+                            'Background Image 1',
+                            "Background Image 2",
+                            'Background Image 3'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value,
+                                  style: Theme.of(context).textTheme.bodyText1),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                     ListTile(

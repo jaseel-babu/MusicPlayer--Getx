@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class playlistpage extends StatefulWidget {
   final List<dynamic> audios;
@@ -17,7 +18,20 @@ class playlistpage extends StatefulWidget {
 }
 
 class _playlistpageState extends State<playlistpage> {
+  @override
+  void initState() {
+    gettheme();
+    super.initState();
+  }
+
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
+  String? theme;
+  String? backimgpath;
+  gettheme() async {
+    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    theme = await sharedPref.getString('theme');
+    setState(() {});
+  }
 
   List<Audio> audio = [];
   List<dynamic> a = [];
@@ -25,12 +39,21 @@ class _playlistpageState extends State<playlistpage> {
   bool isUserPressed = false;
   @override
   Widget build(BuildContext context) {
+    if (theme == null ||
+        theme == 'Background Image 1' ||
+        theme == 'Change Background Image') {
+      backimgpath = 'assets/images/fYV9z3.webp';
+    } else if (theme == 'Background Image 2') {
+      backimgpath = 'assets/images/darkper.jpg';
+    } else if (theme == 'Background Image 3') {
+      backimgpath = 'assets/images/_.jpeg';
+    }
     a = playlistbox.get(widget.title);
     return SafeArea(
       child: Container(
         decoration: new BoxDecoration(
             image: new DecorationImage(
-          image: new AssetImage('assets/images/fYV9z3.webp'),
+          image: new AssetImage(backimgpath!),
           fit: BoxFit.cover,
         )),
         child: Scaffold(

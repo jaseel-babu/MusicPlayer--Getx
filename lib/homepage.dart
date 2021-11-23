@@ -16,17 +16,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  bool? theme;
+
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   @override
   void initState() {
+    gettheme();
     super.initState();
   }
 
+  String? theme;
+  String backimgpath = 'assets/images/fYV9z3.webp';
   gettheme() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    theme = await sharedPreferences.getBool('theme');
+    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    theme = await sharedPref.getString('theme');
+    if (theme == null ||
+        theme == 'Background Image 1' ||
+        theme == 'Change Background Image') {
+      backimgpath = 'assets/images/fYV9z3.webp';
+    } else if (theme == 'Background Image 2') {
+      backimgpath = 'assets/images/darkper.jpg';
+    } else if (theme == 'Background Image 3') {
+      backimgpath = 'assets/images/_.jpeg';
+    }
+    setState(() {});
   }
 
   void onItemTapped(int index) {
@@ -37,7 +49,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {});
     List<Widget> _widgetOption = [
       Songlist(
         audios: widget.audio,
@@ -49,14 +60,12 @@ class _HomePageState extends State<HomePage> {
         audios: widget.audio,
       )
     ];
-    gettheme();
+
     return SafeArea(
       child: Container(
         decoration: new BoxDecoration(
             image: new DecorationImage(
-          image: theme == true || theme == null
-              ? AssetImage('assets/images/fYV9z3.webp')
-              : AssetImage('assets/images/white.jpg'),
+          image: new AssetImage(backimgpath),
           fit: BoxFit.cover,
         )),
         child: Scaffold(

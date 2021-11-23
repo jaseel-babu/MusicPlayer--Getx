@@ -1,6 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:musicsample/duration.dart';
+
 import 'package:musicsample/functionalities/addsongplaylist.dart';
 import 'package:musicsample/functionalities/favoriteButton.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -27,7 +27,6 @@ class _PlayPageState extends State<PlayPage> {
   @override
   void initState() {
     super.initState();
-    // setSong();
   }
 
   Audio? myAudio;
