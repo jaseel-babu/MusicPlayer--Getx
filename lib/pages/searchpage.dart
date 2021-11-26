@@ -41,8 +41,11 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             onChanged: (value) {
               Future.delayed(Duration(seconds: 2), () {
-                setState(() {});
-                searchText = value;
+                if (mounted) {
+                  setState(() {
+                    searchText = value;
+                  });
+                }
               });
             },
             decoration: InputDecoration(

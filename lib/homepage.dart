@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage> {
   String? theme;
   String backimgpath = 'assets/images/fYV9z3.webp';
   gettheme() async {
+    // -------------background image---------
+
     final SharedPreferences sharedPref = await SharedPreferences.getInstance();
     theme = await sharedPref.getString('theme');
     if (theme == null ||
@@ -72,7 +74,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: Text(
-              'Music Player',
+              'Musicus',
               style: Theme.of(context).textTheme.headline1,
             ),
             backgroundColor: Colors.transparent,

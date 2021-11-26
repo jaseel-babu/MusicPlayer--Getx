@@ -14,9 +14,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DataModelAdapter());
   Hive.registerAdapter(PlaylistModelmyAdapter());
-  // Hive.registerAdapter(playlistindexAdapter());
   Hive.registerAdapter(FavoritesmodelAdapter());
-  // await Hive.openBox('playlistindex');
   await Hive.openBox('playlist');
   await Hive.openBox('songbox');
   await Hive.openBox('fav');
@@ -92,7 +90,7 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(child: Image.asset('assets/images/logo.jpeg')),
+      body: Center(child: Image.asset('assets/images/AppLogo.png')),
     );
   }
 }
@@ -125,6 +123,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     requestpermission();
   }
+// ------------------Permission request and song fetching------------
 
   Future<void> requestpermission() async {
     bool permissionStatus = await _audioQuery.permissionsStatus();

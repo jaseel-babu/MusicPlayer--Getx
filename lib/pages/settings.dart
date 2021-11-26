@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,9 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool onOff = true;
   String? theme;
-
+  String? them;
+  String? backimgpath;
+  bool a = true;
   @override
   void initState() {
     super.initState();
@@ -50,8 +53,6 @@ class _SettingsPageState extends State<SettingsPage> {
     return onOff != null ? onOff : true;
   }
 
-  String? them;
-  String? backimgpath;
   getstheme() async {
     final SharedPreferences sharedPref = await SharedPreferences.getInstance();
     them = await sharedPref.getString('theme');
@@ -103,6 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: Text('Notification',
                           style: Theme.of(context).textTheme.bodyText1),
                       trailing: Switch(
+                        activeColor: Colors.grey,
                         value: onOff,
                         onChanged: (value) {
                           setState(
@@ -110,13 +112,19 @@ class _SettingsPageState extends State<SettingsPage> {
                               onOff = value;
                               setchoice(value);
                               print(value);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text(
-                                      'Notification will be On/Off in Next Restart'),
-                                  duration: const Duration(seconds: 1),
-                                ),
-                              );
+                              if (a) {
+                                a = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                        'Notification will be On/Off in Next Restart'),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                                Timer(Duration(seconds: 2), () {
+                                  a = true;
+                                });
+                              }
                             },
                           );
                         },
@@ -172,13 +180,15 @@ class _SettingsPageState extends State<SettingsPage> {
                             style: Theme.of(context).textTheme.bodyText1)),
                     ListTile(
                       onTap: () => showAboutDialog(
+                          applicationLegalese:
+                              "Musicus its a Offline Music Player Created by Jaseel Babu.It's the First version of this App",
                           applicationIcon: Image.asset(
-                            'assets/images/logo.jpeg',
+                            'assets/images/AppLogo.png',
                             width: 50,
                             height: 50,
                           ),
                           context: context,
-                          applicationName: 'Music app',
+                          applicationName: 'Musicus',
                           applicationVersion: '1.0.0'),
                       leading: Text('About',
                           style: Theme.of(context).textTheme.bodyText1),

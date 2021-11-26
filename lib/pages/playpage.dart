@@ -163,10 +163,6 @@ class _PlayPageState extends State<PlayPage> {
                                           },
                                         ),
                                       ),
-                                      // PositionSeekWidget(
-                                      //     currentPosition:
-                                      //         currentinfo.currentPosition,
-                                      //     duration: currentinfo.duration),
                                       PlayerBuilder.isPlaying(
                                         player: assetsAudioPlayer,
                                         builder: (context, isPlaying) {
