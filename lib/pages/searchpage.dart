@@ -18,7 +18,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
-
   String searchText = "";
   List<Audio> xt = [];
   TextEditingController searchcontroll = TextEditingController();
