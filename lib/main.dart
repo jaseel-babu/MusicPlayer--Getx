@@ -141,19 +141,23 @@ class _MyAppState extends State<MyApp> {
         orderType: OrderType.ASC_OR_SMALLER,
         uriType: UriType.EXTERNAL,
         ignoreCase: true);
-    getsongs.forEach((element) {
-      datasongs.add({
-        'title': element.title,
-        'artist': element.artist,
-        'id': element.id,
-        'uri': element.uri,
-        'album': element.album,
-        'duration': element.duration,
-      });
+    getsongs.forEach(
+      (element) {
+        datasongs.add(
+          {
+            'title': element.title,
+            'artist': element.artist,
+            'id': element.id,
+            'uri': element.uri,
+            'album': element.album,
+            'duration': element.duration,
+          },
+        );
 
-      databox.put('allsongs', datasongs);
-      allsongsfromhive = databox.get('allsongs');
-    });
+        databox.put('allsongs', datasongs);
+        allsongsfromhive = databox.get('allsongs');
+      },
+    );
     for (var i = 0; i <= allsongsfromhive.length - 1; i++) {
       var newaudio = Audio.file(
         allsongsfromhive[i]['uri'].toString(),

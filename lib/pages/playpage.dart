@@ -82,124 +82,128 @@ class _PlayPageState extends State<PlayPage> {
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : Padding(
-                      padding: const EdgeInsets.only(bottom: 48.0),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 300,
-                                  height: 300,
-                                  child: QueryArtworkWidget(
-                                    nullArtworkWidget: Image.asset(
-                                        'assets/images/Neon Apple Music Logo.png'),
-                                    id: image,
-                                    type: ArtworkType.AUDIO,
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 48.0),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 300,
+                                    height: 300,
+                                    child: QueryArtworkWidget(
+                                      nullArtworkWidget: Image.asset(
+                                          'assets/images/Neon Apple Music Logo.png'),
+                                      id: image,
+                                      type: ArtworkType.AUDIO,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                ),
-                                ListTile(
-                                    title: Text(myAudio!.metas.title!,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline2),
-                                    subtitle: Text(myAudio!.metas.artist!,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                  SizedBox(
+                                    height: 40,
+                                  ),
+                                  ListTile(
+                                      title: Text(myAudio!.metas.title!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2),
+                                      subtitle: Text(myAudio!.metas.artist!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          FavoriteButton(
+                                            myAudio: myAudio!,
+                                          ),
+                                          AddSongToPlaylist(
+                                            audio: myAudio!,
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Column(
+                              children: <Widget>[
+                                assetsAudioPlayer.builderRealtimePlayingInfos(
+                                  builder: (context,
+                                      RealtimePlayingInfos? currentinfo) {
+                                    if (currentinfo == null) {
+                                      return Text(
+                                        'Sorry',
+                                        style: TextStyle(color: Colors.white),
+                                      );
+                                    }
+                                    return Column(
                                       children: [
-                                        FavoriteButton(
-                                          myAudio: myAudio!,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 25.0,
+                                              right: 25.0,
+                                              top: 20.0,
+                                              bottom: 20.0),
+                                          child: ProgressBar(
+                                            thumbRadius: 0.0,
+                                            thumbColor: Colors.white,
+                                            progressBarColor: Colors.white,
+                                            progress:
+                                                currentinfo.currentPosition,
+                                            total: currentinfo.duration,
+                                            onSeek: (to) {
+                                              assetsAudioPlayer.seek(to);
+                                            },
+                                          ),
                                         ),
-                                        AddSongToPlaylist(
-                                          audio: myAudio!,
-                                        ),
+                                        PlayerBuilder.isPlaying(
+                                          player: assetsAudioPlayer,
+                                          builder: (context, isPlaying) {
+                                            bool nextDone = true;
+                                            bool prevDone = true;
+                                            return PlayingControls(
+                                              isPlaying: isPlaying,
+                                              isPlaylist: true,
+                                              onPlay: () async {
+                                                await assetsAudioPlayer
+                                                    .playOrPause();
+                                              },
+                                              onNext: () async {
+                                                if (nextDone) {
+                                                  nextDone = false;
+                                                  await assetsAudioPlayer
+                                                      .next();
+                                                  nextDone = true;
+                                                }
+                                              },
+                                              onPrevious: () async {
+                                                if (prevDone) {
+                                                  prevDone = false;
+                                                  await assetsAudioPlayer
+                                                      .previous();
+                                                  prevDone = true;
+                                                }
+                                              },
+                                            );
+                                          },
+                                        )
                                       ],
-                                    ))
+                                    );
+                                  },
+                                ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Column(
-                            children: <Widget>[
-                              assetsAudioPlayer.builderRealtimePlayingInfos(
-                                builder: (context,
-                                    RealtimePlayingInfos? currentinfo) {
-                                  if (currentinfo == null) {
-                                    return Text(
-                                      'Sorry',
-                                      style: TextStyle(color: Colors.white),
-                                    );
-                                  }
-                                  return Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 25.0,
-                                            right: 25.0,
-                                            top: 20.0,
-                                            bottom: 20.0),
-                                        child: ProgressBar(
-                                          thumbRadius: 0.0,
-                                          thumbColor: Colors.white,
-                                          progressBarColor: Colors.white,
-                                          progress: currentinfo.currentPosition,
-                                          total: currentinfo.duration,
-                                          onSeek: (to) {
-                                            assetsAudioPlayer.seek(to);
-                                          },
-                                        ),
-                                      ),
-                                      PlayerBuilder.isPlaying(
-                                        player: assetsAudioPlayer,
-                                        builder: (context, isPlaying) {
-                                          bool nextDone = true;
-                                          bool prevDone = true;
-                                          return PlayingControls(
-                                            isPlaying: isPlaying,
-                                            isPlaylist: true,
-                                            onPlay: () async {
-                                              await assetsAudioPlayer
-                                                  .playOrPause();
-                                            },
-                                            onNext: () async {
-                                              if (nextDone) {
-                                                nextDone = false;
-                                                await assetsAudioPlayer.next();
-                                                nextDone = true;
-                                              }
-                                            },
-                                            onPrevious: () async {
-                                              if (prevDone) {
-                                                prevDone = false;
-                                                await assetsAudioPlayer
-                                                    .previous();
-                                                prevDone = true;
-                                              }
-                                            },
-                                          );
-                                        },
-                                      )
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
             },

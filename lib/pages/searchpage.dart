@@ -19,12 +19,12 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   String searchText = "";
-  List<Audio> xt = [];
+  List<Audio> dummy = [];
   TextEditingController searchcontroll = TextEditingController();
   @override
   Widget build(BuildContext context) {
     List<Audio> result = searchText == ''
-        ? xt.toList()
+        ? dummy.toList()
         : widget.audios
             .where(
               (element) => element.metas.title!.toLowerCase().contains(
@@ -61,7 +61,6 @@ class _SearchPageState extends State<SearchPage> {
                   scrollDirection: Axis.vertical,
                   itemCount: result.length,
                   itemBuilder: (context, index) {
-                    print(result);
                     return GestureDetector(
                       onTap: () {
                         OpenPlayer().openPlayer(index, result);
