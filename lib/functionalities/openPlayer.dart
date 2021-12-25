@@ -8,13 +8,13 @@ class OpenPlayer {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     onOff = await sharedPreferences.getBool(userOnOfNotification);
-    print(onOff);
+  
   }
 
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   void openPlayer(int index, List<Audio> audios) async {
     await getChoice();
-    print(onOff);
+   
     await assetsAudioPlayer.open(Playlist(audios: audios, startIndex: index),
         showNotification: onOff == null || onOff == true ? true : false,
         autoStart: true,

@@ -1,32 +1,24 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:get/get.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/controller/controller.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class favoritesPage extends StatefulWidget {
+class favoritesPage extends StatelessWidget {
   favoritesPage({Key? key}) : super(key: key);
-
-  @override
-  _favoritesPageState createState() => _favoritesPageState();
-}
-
-class _favoritesPageState extends State<favoritesPage> {
-  @override
-  void initState() {
-    gettheme();
-    super.initState();
-  }
-
+  final controller = Get.put(Controller());
+  AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   String? theme;
   String? backimgpath;
   gettheme() async {
     final SharedPreferences sharedPref = await SharedPreferences.getInstance();
     theme = await sharedPref.getString('theme');
-    setState(() {});
+    controller.update();
   }
 
   List<Audio> audio = [];
@@ -49,20 +41,28 @@ class _favoritesPageState extends State<favoritesPage> {
           fit: BoxFit.cover,
         )),
         child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              elevation: 0,
-              title: Text(
-                'Favorites',
-                style: Theme.of(context).textTheme.headline1,
-              ),
-              backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            elevation: 0,
+            title: Text(
+              'Favorites',
+              style: Theme.of(context).textTheme.headline1,
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [favlist()],
-              ),
-            )),
+            backgroundColor: Colors.transparent,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                GetBuilder<Controller>(
+                  id: "delete",
+                  builder: (controller) {
+                    return favlist();
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -117,6 +117,7 @@ class _favoritesPageState extends State<favoritesPage> {
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
                 onTap: () {
+                  assetsAudioPlayer.stop();
                   OpenPlayer().openPlayer(ind, audio);
                   Navigator.push(
                     context,
@@ -132,7 +133,7 @@ class _favoritesPageState extends State<favoritesPage> {
                   ),
                   onPressed: () {
                     keys.removeAt(ind);
-                    setState(() {});
+                    controller.update(["delete"]);
                   },
                 ),
               ),

@@ -1,28 +1,21 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:get/get.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/controller/controller.dart';
 import 'package:musicsample/functionalities/openPlayer.dart';
 import 'package:musicsample/pages/playpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class playlistpage extends StatefulWidget {
+class playlistpage extends StatelessWidget {
   final List<dynamic> audios;
   final String title;
   playlistpage({Key? key, required this.title, required this.audios})
       : super(key: key);
 
-  @override
-  _playlistpageState createState() => _playlistpageState();
-}
-
-class _playlistpageState extends State<playlistpage> {
-  @override
-  void initState() {
-    gettheme();
-    super.initState();
-  }
+  final controller = Get.put(Controller());
 
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   String? theme;
@@ -30,7 +23,7 @@ class _playlistpageState extends State<playlistpage> {
   gettheme() async {
     final SharedPreferences sharedPref = await SharedPreferences.getInstance();
     theme = await sharedPref.getString('theme');
-    setState(() {});
+    controller.update();
   }
 
   List<Audio> audio = [];
@@ -48,7 +41,7 @@ class _playlistpageState extends State<playlistpage> {
     } else if (theme == 'Background Image 3') {
       backimgpath = 'assets/images/_.jpeg';
     }
-    a = playlistbox.get(widget.title);
+    a = playlistbox.get(title);
     return SafeArea(
       child: Container(
         decoration: new BoxDecoration(
@@ -61,7 +54,7 @@ class _playlistpageState extends State<playlistpage> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             title: Text(
-              widget.title,
+              title,
               style: Theme.of(context).textTheme.headline1,
             ),
           ),
@@ -73,11 +66,11 @@ class _playlistpageState extends State<playlistpage> {
                     onTap: () {
                       Box databox = Hive.box('songbox');
                       List<dynamic> allsongsfromhive = databox.get('allsongs');
-                      print(allsongsfromhive[0]['id']);
+                    
                       showModalBottomSheet<void>(
                         context: context,
                         builder: (context) {
-                          return bottam(name: widget.title);
+                          return bottam(name: title);
                         },
                       );
                     },
@@ -99,7 +92,7 @@ class _playlistpageState extends State<playlistpage> {
       valueListenable: Hive.box('playlist').listenable(),
       builder: (context, Box todos, _) {
         audio = [];
-        List<dynamic> keys = todos.get(widget.title);
+        List<dynamic> keys = todos.get(title);
         for (var i = 0; i <= keys.length - 1; i++) {
           Audio? newaudio = Audio.file(
             keys[i]['uri'].toString(),
@@ -116,72 +109,69 @@ class _playlistpageState extends State<playlistpage> {
 
           audio.add(newaudio);
         }
-        return (ListView.separated(
-          physics: ScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          itemCount: keys.length,
-          shrinkWrap: true,
-          itemBuilder: (context, ind) {
-            return ListTile(
-              title: Text(keys[ind]['title'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyText1),
-              leading: QueryArtworkWidget(
-                nullArtworkWidget:
-                    Image.asset('assets/images/Neon Apple Music Logo.png'),
-                id: keys[ind]['id'],
-                type: ArtworkType.AUDIO,
-              ),
-              subtitle: Text(keys[ind]['artist'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyText2),
-              onTap: () {
-                OpenPlayer().openPlayer(ind, audio);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlayPage(audio: audio, index: ind),
+        return GetBuilder<Controller>(
+          id: "deleted",
+          builder: (contreller) {
+            return (ListView.separated(
+              physics: ScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: keys.length,
+              shrinkWrap: true,
+              itemBuilder: (context, ind) {
+                return ListTile(
+                  title: Text(keys[ind]['title'],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyText1),
+                  leading: QueryArtworkWidget(
+                    nullArtworkWidget:
+                        Image.asset('assets/images/Neon Apple Music Logo.png'),
+                    id: keys[ind]['id'],
+                    type: ArtworkType.AUDIO,
+                  ),
+                  subtitle: Text(keys[ind]['artist'],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyText2),
+                  onTap: () {
+                    assetsAudioPlayer.stop();
+                    OpenPlayer().openPlayer(ind, audio);
+                    Get.to(() => PlayPage(audio: audio, index: ind));
+                  },
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      keys.removeAt(ind);
+                      controller.update(["deleted"]);
+                    },
                   ),
                 );
               },
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  keys.removeAt(ind);
-                  setState(() {});
-                },
+              separatorBuilder: (_, index) => Divider(
+                color: Colors.white,
               ),
-            );
+            ));
           },
-          separatorBuilder: (_, index) => Divider(
-            color: Colors.white,
-          ),
-        ));
+        );
       },
     );
   }
 }
 
-class bottam extends StatefulWidget {
+class bottam extends StatelessWidget {
   bottam({Key? key, required this.name}) : super(key: key);
   final name;
-  @override
-  _bottamState createState() => _bottamState();
-}
-
-class _bottamState extends State<bottam> {
+  final controller = Get.put(Controller());
   Box playlistbox = Hive.box('playlist');
   List<dynamic> a = [];
   @override
   Widget build(BuildContext context) {
     Box databox = Hive.box('songbox');
     List<dynamic> allsongsfromhive = databox.get('allsongs');
-    List<dynamic> playlist = playlistbox.get(widget.name);
+    List<dynamic> playlist = playlistbox.get(name);
     return ListView.builder(
       physics: ScrollPhysics(),
       shrinkWrap: true,
@@ -199,35 +189,40 @@ class _bottamState extends State<bottam> {
             allsongsfromhive[index]['title'],
             style: TextStyle(color: Colors.black),
           ),
-          trailing: playlist
-                  .where((element) =>
-                      element["id"].toString() ==
-                      allsongsfromhive[index]["id"].toString())
-                  .isEmpty
-              ? GestureDetector(
-                  onTap: () {
-                    playlist.add(allsongsfromhive[index]);
-                    playlistbox.put(widget.name, playlist);
-                    setState(() {});
-                  },
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
-                )
-              : GestureDetector(
-                  onTap: () {
-                    playlist.removeWhere((element) =>
-                        element['id'].toString() ==
-                        allsongsfromhive[index]['id'].toString());
-                    playlistbox.put(widget.name, playlist);
-                    setState(() {});
-                  },
-                  child: Icon(
-                    Icons.check_box,
-                    color: Colors.black,
-                  ),
-                ),
+          trailing: GetBuilder<Controller>(
+            id: "playlist",
+            builder: (controller) {
+              return playlist
+                      .where((element) =>
+                          element["id"].toString() ==
+                          allsongsfromhive[index]["id"].toString())
+                      .isEmpty
+                  ? GestureDetector(
+                      onTap: () {
+                        playlist.add(allsongsfromhive[index]);
+                        playlistbox.put(name, playlist);
+                        controller.update(["playlist"]);
+                      },
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        playlist.removeWhere((element) =>
+                            element['id'].toString() ==
+                            allsongsfromhive[index]['id'].toString());
+                        playlistbox.put(name, playlist);
+                        controller.update(["playlist"]);
+                      },
+                      child: Icon(
+                        Icons.check_box,
+                        color: Colors.black,
+                      ),
+                    );
+            },
+          ),
         );
       },
     );

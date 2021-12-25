@@ -1,17 +1,15 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get/get.dart';
 
-class AddSongToPlaylist extends StatefulWidget {
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/controller/controller.dart';
+
+class AddSongToPlaylist extends StatelessWidget {
   final Audio audio;
   AddSongToPlaylist({Key? key, required this.audio}) : super(key: key);
+  final controller = Get.put(Controller());
 
-  @override
-  _AddSongToPlaylistState createState() => _AddSongToPlaylistState();
-}
-
-class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -69,7 +67,7 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                                   dummylist,
                                                 )
                                               : playlistbox;
-                                          setState(() {});
+                                          controller.update(["addplaylist"]);
                                           Navigator.pop(context, 'OK');
                                           namecontroller.clear();
                                         }
@@ -105,11 +103,10 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                 itemBuilder: (context, ind) {
                                   List<dynamic> findsong = allsongsfromhive
                                       .where(
-                                        (element) => element['id']
-                                            .toString()
-                                            .contains(
-                                              widget.audio.metas.id.toString(),
-                                            ),
+                                        (element) =>
+                                            element['id'].toString().contains(
+                                                  audio.metas.id.toString(),
+                                                ),
                                       )
                                       .toList();
                                   List<dynamic> playlists =
@@ -127,13 +124,12 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                       ),
                                       trailing: TextButton(
                                         onPressed: () {
-                                          setState(() {});
+                                          controller.update(["addplaylist"]);
                                         },
                                         child: playlists
                                                 .where((element) =>
                                                     element['id'].toString() ==
-                                                    widget.audio.metas.id
-                                                        .toString())
+                                                    audio.metas.id.toString())
                                                 .isEmpty
                                             ? GestureDetector(
                                                 onTap: () {
@@ -141,7 +137,8 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                                   playlistbox.put(
                                                       keys[ind], playlists);
 
-                                                  setState(() {});
+                                                  controller
+                                                      .update(["addplaylist"]);
                                                   Navigator.pop(context);
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
@@ -161,7 +158,7 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                                               )
                                             : GestureDetector(
                                                 onTap: () {
-                                                  print(findsong.first);
+                                                
                                                   playlists.removeWhere(
                                                       (element) =>
                                                           element['id']

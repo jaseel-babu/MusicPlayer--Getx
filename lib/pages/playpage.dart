@@ -1,5 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
+import 'package:musicsample/controller/controller.dart';
 
 import 'package:musicsample/functionalities/addsongplaylist.dart';
 import 'package:musicsample/functionalities/favoriteButton.dart';
@@ -7,27 +9,17 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import '../controll.dart';
 
-class PlayPage extends StatefulWidget {
+class PlayPage extends StatelessWidget {
   final int index;
   final List<Audio> audio;
 
   PlayPage({required this.audio, required this.index});
 
-  @override
-  _PlayPageState createState() => _PlayPageState();
-}
-
-class _PlayPageState extends State<PlayPage> {
   bool userTouch = true;
 
   bool isPlaying = false;
 
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Audio? myAudio;
 
@@ -73,7 +65,7 @@ class _PlayPageState extends State<PlayPage> {
           ),
           body: assetsAudioPlayer.builderCurrent(
             builder: (context, Playing? playing) {
-              myAudio = find(widget.audio, playing!.audio.assetAudioPath);
+              myAudio = find(audio, playing!.audio.assetAudioPath);
               var image = int.parse(myAudio!.metas.id!);
               return myAudio == null
                   ? Center(
@@ -86,6 +78,8 @@ class _PlayPageState extends State<PlayPage> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 48.0),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -102,7 +96,8 @@ class _PlayPageState extends State<PlayPage> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 40,
+                                    height:
+                                        MediaQuery.of(context).size.height / 15,
                                   ),
                                   ListTile(
                                       title: Text(myAudio!.metas.title!,
@@ -120,19 +115,27 @@ class _PlayPageState extends State<PlayPage> {
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          FavoriteButton(
-                                            myAudio: myAudio!,
-                                          ),
-                                          AddSongToPlaylist(
-                                            audio: myAudio!,
-                                          ),
+                                          GetBuilder<Controller>(
+                                              id: "fav",
+                                              builder: (controller) {
+                                                return FavoriteButton(
+                                                  myAudio: myAudio!,
+                                                );
+                                              }),
+                                          GetBuilder<Controller>(
+                                              id: "addplaylist",
+                                              builder: (controller) {
+                                                return AddSongToPlaylist(
+                                                  audio: myAudio!,
+                                                );
+                                              }),
                                         ],
                                       ))
                                 ],
                               ),
                             ),
                             SizedBox(
-                              height: 30,
+                              height: MediaQuery.of(context).size.height / 15,
                             ),
                             Column(
                               children: <Widget>[

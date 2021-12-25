@@ -1,19 +1,17 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get/get.dart';
 
-class Popupmenu extends StatefulWidget {
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicsample/controller/controller.dart';
+
+class Popupmenu extends StatelessWidget {
   final List<Audio> audios;
   final int index;
   Popupmenu({Key? key, required this.audios, required this.index})
       : super(key: key);
+  final controller = Get.put(Controller());
 
-  @override
-  _PopupmenuState createState() => _PopupmenuState();
-}
-
-class _PopupmenuState extends State<Popupmenu> {
   var playlistbox = Hive.box('playlist');
 
   final TextEditingController namecontroller = TextEditingController();
@@ -86,7 +84,7 @@ class _PopupmenuState extends State<Popupmenu> {
                                                             dummylist,
                                                           )
                                                         : playlistbox;
-                                                    setState(() {});
+                                                    //  setState(() {});
                                                     Navigator.pop(
                                                         context, 'OK');
                                                     namecontroller.clear();
@@ -138,9 +136,7 @@ class _PopupmenuState extends State<Popupmenu> {
                                                                 element['id']
                                                                     .toString()
                                                                     .contains(
-                                                                      widget
-                                                                          .audios[
-                                                                              widget.index]
+                                                                      audios[index]
                                                                           .metas
                                                                           .id
                                                                           .toString(),
@@ -163,88 +159,69 @@ class _PopupmenuState extends State<Popupmenu> {
                                                             color:
                                                                 Colors.white),
                                                       ),
-                                                      trailing: TextButton(
-                                                        onPressed: () {
-                                                          setState(() {});
-                                                        },
-                                                        child: playlists
-                                                                .where((element) =>
-                                                                    element['id']
-                                                                        .toString() ==
-                                                                    widget
-                                                                        .audios[
-                                                                            widget.index]
-                                                                        .metas
-                                                                        .id
-                                                                        .toString())
-                                                                .isEmpty
-                                                            ? GestureDetector(
-                                                                onTap: () {
-                                                                  playlists.add(
-                                                                      findsong
-                                                                          .first);
-                                                                  playlistbox.put(
-                                                                      keys[ind],
-                                                                      playlists);
+                                                      trailing:
+                                                          GetBuilder<
+                                                                  Controller>(
+                                                              id: "songadded",
+                                                              builder:
+                                                                  (controller) {
+                                                                return TextButton(
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: playlists
+                                                                          .where((element) =>
+                                                                              element['id'].toString() ==
+                                                                              audios[index].metas.id.toString())
+                                                                          .isEmpty
+                                                                      ? GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            playlists.add(findsong.first);
+                                                                            playlistbox.put(keys[ind],
+                                                                                playlists);
 
-                                                                  setState(
-                                                                      () {});
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                  ScaffoldMessenger.of(
-                                                                          context)
-                                                                      .showSnackBar(
-                                                                    SnackBar(
-                                                                      content:
-                                                                          const Text(
-                                                                              'Song Added In Playlist'),
-                                                                      duration: const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child: Text(
-                                                                  'Add to Playlist',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              )
-                                                            : GestureDetector(
-                                                                onTap: () {
-                                                                  print(findsong
-                                                                      .first);
-                                                                  playlists.removeWhere((element) =>
-                                                                      element['id']
-                                                                          .toString() ==
-                                                                      findsong
-                                                                          .first[
-                                                                              'id']
-                                                                          .toString());
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                  ScaffoldMessenger.of(
-                                                                          context)
-                                                                      .showSnackBar(
-                                                                    SnackBar(
-                                                                      content:
-                                                                          const Text(
-                                                                              'Song Removed From Playlist'),
-                                                                      duration: const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child: Text(
-                                                                  'Remove From Playlist',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ),
-                                                      ),
+                                                                            controller.update([
+                                                                              "songadded"
+                                                                            ]);
+                                                                            Navigator.pop(context);
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                              SnackBar(
+                                                                                content: const Text('Song Added In Playlist'),
+                                                                                duration: const Duration(seconds: 1),
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            'Add to Playlist',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ),
+                                                                        )
+                                                                      : GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                         
+                                                                            playlists.removeWhere((element) =>
+                                                                                element['id'].toString() ==
+                                                                                findsong.first['id'].toString());
+                                                                            Navigator.pop(context);
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                              SnackBar(
+                                                                                content: const Text('Song Removed From Playlist'),
+                                                                                duration: const Duration(seconds: 1),
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            'Remove From Playlist',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ),
+                                                                        ),
+                                                                );
+                                                              }),
                                                     ),
                                                   );
                                                 },
@@ -274,25 +251,25 @@ class _PopupmenuState extends State<Popupmenu> {
                 List<dynamic> findsong = allsongsfromhive
                     .where(
                       (element) => element['id'].toString().contains(
-                            widget.audios[widget.index].metas.id.toString(),
+                            audios[index].metas.id.toString(),
                           ),
                     )
                     .toList();
                 favlists
                         .where((element) =>
                             element['id'].toString() ==
-                            widget.audios[widget.index].metas.id.toString())
+                            audios[index].metas.id.toString())
                         .isEmpty
                     ? favlists.add(findsong.first)
                     : favlists.removeWhere((element) =>
                         element['id'].toString() ==
-                        widget.audios[widget.index].metas.id.toString());
+                        audios[index].metas.id.toString());
 
                 favoritesbox.put('favsong', favlists);
                 favlists
                         .where((element) =>
                             element['id'].toString() ==
-                            widget.audios[widget.index].metas.id.toString())
+                            audios[index].metas.id.toString())
                         .isEmpty
                     ? ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -311,7 +288,7 @@ class _PopupmenuState extends State<Popupmenu> {
               child: favlists
                       .where((element) =>
                           element['id'].toString() ==
-                          widget.audios[widget.index].metas.id.toString())
+                          audios[index].metas.id.toString())
                       .isEmpty
                   ? new Text('Add to Favorites')
                   : new Text('Remove From Favorites'),

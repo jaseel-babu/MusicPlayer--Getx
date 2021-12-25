@@ -1,65 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:musicsample/controller/controller.dart';
 import 'package:musicsample/pages/settings.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/library.dart';
 import 'pages/searchpage.dart';
 import 'pages/songlist.dart';
+import 'package:get/get.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   final List<Audio> audio;
   HomePage({Key? key, required this.audio}) : super(key: key);
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
+  final controller = Get.put(Controller());
   AssetsAudioPlayer get assetsAudioPlayer => AssetsAudioPlayer.withId('music');
-  @override
-  void initState() {
-    gettheme();
-    super.initState();
-  }
-
-  String? theme;
-  String backimgpath = 'assets/images/fYV9z3.webp';
-  gettheme() async {
-    // -------------background image---------
-
-    final SharedPreferences sharedPref = await SharedPreferences.getInstance();
-    theme = await sharedPref.getString('theme');
-    if (theme == null ||
-        theme == 'Background Image 1' ||
-        theme == 'Change Background Image') {
-      backimgpath = 'assets/images/fYV9z3.webp';
-    } else if (theme == 'Background Image 2') {
-      backimgpath = 'assets/images/darkper.jpg';
-    } else if (theme == 'Background Image 3') {
-      backimgpath = 'assets/images/_.jpeg';
-    }
-    setState(() {});
-  }
-
-  void onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = [
       Songlist(
-        audios: widget.audio,
+        audios: audio,
       ),
       SearchPage(
-        audios: widget.audio,
+        audios: audio,
       ),
       Library(
-        audios: widget.audio,
+        audios: audio,
       )
     ];
 
@@ -67,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         decoration: new BoxDecoration(
             image: new DecorationImage(
-          image: new AssetImage(backimgpath),
+          image: new AssetImage(controller.backimgpath),
           fit: BoxFit.cover,
         )),
         child: Scaffold(
@@ -80,47 +44,51 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.transparent,
             actions: [
               IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SettingsPage(),
-                    ),
-                  );
-                },
-              ),
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    Get.to(() => SettingsPage());
+                  }),
             ],
           ),
-          body: _widgetOption[_selectedIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.black,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home_filled,
-                  color: Colors.white,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                label: 'Search',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.library_music,
-                  color: Colors.white,
-                ),
-                label: 'Library',
-              ),
-            ],
-            onTap: onItemTapped,
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.white,
+          body: GetBuilder<Controller>(
+            id: "indexchange",
+            builder: (controller) {
+              return _widgetOption[controller.selectedIndex];
+            },
+          ),
+          bottomNavigationBar: GetBuilder<Controller>(
+            id: "indexchange",
+            builder: (contrl) {
+              return BottomNavigationBar(
+                backgroundColor: Colors.black,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home_filled,
+                      color: Colors.white,
+                    ),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    label: 'Search',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.library_music,
+                      color: Colors.white,
+                    ),
+                    label: 'Library',
+                  ),
+                ],
+                onTap: contrl.onItemTapped,
+                currentIndex: contrl.selectedIndex,
+                selectedItemColor: Colors.white,
+              );
+            },
           ),
         ),
       ),
